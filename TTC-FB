@@ -1,0 +1,1956 @@
+from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
+from pathlib import Path
+from selenium.webdriver.chrome.options import Options
+from selenium.common.exceptions import NoSuchElementException
+from selenium.webdriver.common.by import By
+from datetime import datetime
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.support.ui import WebDriverWait
+from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.support import expected_conditions as EC
+import re
+import platform
+import os
+import zipfile
+import subprocess
+import platform
+import getpass
+from selenium.webdriver.common.action_chains import ActionChains
+import hashlib
+import json
+from pynput.keyboard import Controller, Key
+from pynput import keyboard
+import threading
+import requests 
+import multiprocessing
+from rich.progress import Progress  
+from rich.console import Console
+import itertools
+from multiprocessing import Process
+from pathlib import Path
+import base64
+import os
+import random
+import sys
+import time
+import shutil
+from colorama import Fore, Style, init
+init(autoreset=True)
+RED = Fore.RED
+YELLOW = Fore.YELLOW
+GREEN = Fore.GREEN
+BLUE = Fore.BLUE
+RESET = Style.RESET_ALL
+MAGENTA = Fore.MAGENTA
+success_count = 0
+profile_path = None
+profile = None
+textcomment = None
+passwords = None
+bill = 0
+done = 0
+console = Console()
+jobs_dict = {}
+running = True
+block = True
+reaction_map = {
+        "THƯƠNG THƯƠNG": "Thương thương",
+        "LOVE": "Yêu thích",
+        "HAHA": "Haha",
+        "WOW": "Wow",
+        "BUỒN": "Buồn",
+        "TỨC GIẬN": "Phẫn nộ"
+    }
+delete_script = """
+const classNames = [
+    "x1i10hfl x1qjc9v5 xjbqb8w xjqpnuy xa49m3k xqeqjp1 x2hbi6w x13fuv20 xu3j5b3 x1q0q8m5 x26u7qi x972fbf xcfux6l x1qhh985 xm0m39n x9f619 xdl72j9 x2lah0s xe8uvvx xdj266r x11i5rnm xat24cr x1mh8g0r x2lwn1j xeuugli xexx8yu x4uap5 x18d9i69 xkhd6sd x16tdsg8 x1hl2dhg xggy1nq x1ja2u2z x1t137rt x1o1ewxj x3x9cwd x1e5q0jg x13rtm0m x3nfvp2 x1q0g3np x87ps6o x1lku1pv x1a2a7pz x1ypdohk x5yr21d x1n2onr6 x3hqpx7", 
+    "xds687c x17qophe xixxii4 x13vifvy x1vjfegm",
+    "xds687c x1pi30zi x1e558r4 xixxii4 x13vifvy xzkaem6",
+    "x6s0dn4 x9f619 x78zum5 x1iyjqo2 x1s65kcs x17qophe x1d52u69 xixxii4 x13vifvy xzkaem6",
+    "html-div xdj266r x11i5rnm x1mh8g0r xexx8yu x18d9i69 x6s0dn4 x9f619 x78zum5 x1s65kcs x1wsgfga x1pi30zi x1swvt13",
+    "html-div xdj266r x11i5rnm xat24cr x1mh8g0r xexx8yu x4uap5 x18d9i69 xkhd6sd x9f619 xdt5ytf xh8yej3 x1lliihq x1n2onr6 xhq5o37 x1qxoq08 x1cpjm7i x1ryaae9 x124lp2h x1hmns74 x1mhyesy x1y3wzot",
+    "x1hc1fzr x1unhpq9 x6o7n8i",
+    "x191j7n5 x92rtbv x10l6tqk x1useyqa",
+    "x6s0dn4 x78zum5 x1a02dak x1a8lsjc x1pi30zi x1swvt13 xz9dl7a",
+    "x9f619 x1n2onr6 x1ja2u2z x1wsgfga x9otpla xwib8y2 x1y1aw1k",
+    "x78zum5 xdt5ytf x1iyjqo2 xh8yej3 xyzno7u x8dqta2",
+    "x7wzq59 xxzkxad xh8yej3 xzkaem6",
+    "x1lliihq x5yr21d xh8yej3",
+    "x8gbvx8 x78zum5 x1q0g3np x1a02dak x1nhvcw1 x1rdy4ex xcud41i x4vbgl9 x139jcc6",
+    "x1nb4dca x1q0q8m5 xso031l x1exxf4d x13fuv20 x178xt8z x1ey2m1c x9f619 xds687c x47corl x10l6tqk x17qophe x13vifvy",
+    "panel panel-info",
+    "col-md-12",
+    "dropdown",
+    "x78zum5 xdt5ytf x2lah0s x1pi30zi x18d9i69 x1swvt13 xyamay9",
+    "x5yr21d x6ikm8r x10wlt62",
+    "x9f619 x1ja2u2z xnp8db0 x112wk31 xnjgh8c xxc7z9f x1t2pt76 x1u2d2a2 x6ikm8r x10wlt62 x1xzczws x7wzq59 xxzkxad x9e5oc1",
+    "x9f619 x1n2onr6 x78zum5 xdt5ytf x193iq5w xeuugli x2lah0s x1t2pt76 x1xzczws x1cvmir6 x1vjfegm x1daaz14",
+    "x1jx94hy x78zum5 xdt5ytf x1iyjqo2 x1ja2u2z x6ikm8r x10wlt62",
+    "x67bb7w x10l6tqk x92rtbv x1rco1iv",
+    "x67bb7w x10l6tqk x1tk7jg1 x1memqgq",
+    "x78zum5 x1a87ojn x1qughib x11f4b5y x10l6tqk x1tk7jg1 x1oysuqx",
+    "x1ey2m1c x78zum5 xdt5ytf xozqiw3 x17qophe x13a6bvl x10l6tqk x13vifvy xq2gx43 xh8yej3",
+    "xsxvzsj x1m3v4wt x17qophe x10l6tqk x13vifvy xjl7whj"
+];
+
+(function() {
+    function removeElements() {
+        classNames.forEach(className => {
+            const selector = className.split(" ").map(cn => "." + cn).join("");
+            document.querySelectorAll(selector).forEach(el => el.remove());
+        });
+        console.log("✅ Đã xoá các phần tử.");
+    }
+
+    if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", removeElements);
+    } else {
+        removeElements();
+    }
+})();
+"""
+
+def get_next_core():
+    """Tự động lấy core tiếp theo để cân bằng tải"""
+    num_cores = os.cpu_count()
+    return (os.getpid() % num_cores)  # Chia đều giữa các core
+
+
+AUTHORIZED_PRO_DEVICES = {
+    "Bluesea_157C42B61A25": "ADMIN NGUYỄN ĐÌNH HUYNH",
+    "Bluesea_85d60d7ee7d2": "Trần Thanh Khang",
+    "Bluesea_00163E03DC15": "Nguyễn Minh Đức",
+    "Bluesea_928fb88cf584": "Nguyễn Hoàng Đức",
+    "Bluesea_cf5adfb7a4a9": "ahn",
+    "Bluesea_C392B2B69B68": "NGUYỄN THÀNH ĐẠT",
+    "Bluesea_4038624c0889": "Vương Văn Mạnh",
+    "Bluesea_453c13276931": "Tiến Đạt",
+    "Bluesea_68b08e200182": "Lê Minh Vũ",
+    "Bluesea_e6e8d88bbf6f": "Lê Back",
+    "Bluesea_2980cacccdaa": "bee",
+    "Bluesea_4798eea595cf": "Nguyễn Minh Đức",
+    "Bluesea_be1e03f63014": "Nguyễn Thuận Thành",
+    "Bluesea_943af6647220": "Bill Traver",
+    "Bluesea_491a4c2b2ddf": "Bill Traver",
+    "Bluesea_cbcd02286cbe": "Sang Nguyễn",
+    "Bluesea_fba38889844f": "Nguyễn Tiến Dũng",
+    "Bluesea_d5e6d64b2637": "Vương",
+    "Bluesea_880f344d9552": "Soái",
+    "Bluesea_7e754ca66701": "Văn Tiến",
+    "Bluesea_5ce2f9c03d5f": "Hồ Khoa"
+}
+def Profile_tool():
+    current_dir = Path(__file__).parent
+    if os.name == 'nt':
+        return Path(os.environ['USERPROFILE']) / "Profile_tool"
+    elif os.name == 'posix' and platform.system() == 'Darwin':
+        return Path.home() / "Profile_tool"
+    else:
+        return current_dir / "Profile_tool"
+base_profile_path = Profile_tool()
+os.makedirs(base_profile_path, exist_ok=True)
+os_name = platform.system()
+VERSION_FILE = base_profile_path / "version.txt"
+CURRENT_VERSION = "Bluesea_3.BETA" 
+os.environ["PYTHONWARNINGS"] = "ignore"  # Ẩn cảnh báo Python
+
+#define hệ thống
+def on_press(key):
+    global running
+    try:
+        if key.char == "`":  # Nếu nhấn 'x', dừng vòng lặp
+            print(f"\n Đang cố dừng {RED}PROJECT{RESET}...")
+            running = False
+            return False  # Dừng listener
+    except AttributeError:
+        pass
+
+
+def get_stable_device_id():
+    """Tạo ID cố định theo thiết bị, đảm bảo máy nào cũng có."""
+    try:
+        system = platform.system()
+        if system == "Windows":
+            import winreg
+            key = winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, r"SOFTWARE\Microsoft\Cryptography")
+            output, _ = winreg.QueryValueEx(key, "MachineGuid")
+        elif system == "Darwin":
+            output = os.popen("ioreg -rd1 -c IOPlatformExpertDevice | awk -F'\"' '/IOPlatformUUID/ {print $(NF-1)}'").read().strip()
+        else:
+            output = None
+        if output:
+            return output.replace("-", "")[:12]
+    except Exception:
+        pass
+    fallback_id = platform.uname().node + platform.system()
+    hashed_id = hashlib.sha256(fallback_id.encode()).hexdigest()[:12]
+    return hashed_id
+
+def generate_bluesea_id():
+    return f"Bluesea_{get_stable_device_id()}"
+def lay_data(base_path = base_profile_path):
+    tran_profiles = {}
+    pilot_profiles = {}
+    for folder in os.listdir(base_path):
+        folder_path = os.path.join(base_path, folder)
+        if os.path.isdir(folder_path):
+            if folder.startswith("pilot_"):
+                zip_file = None
+                sub_profiles = {}
+                for item in os.listdir(folder_path):
+                    item_path = os.path.join(folder_path, item)
+                    if item.endswith(".zip"):
+                        zip_file = item_path
+                    elif os.path.isdir(item_path):
+                        pass_path = os.path.join(item_path, "infomation.txt")
+                        password = None
+                        if os.path.exists(pass_path):
+                            with open(pass_path, "r") as f:
+                                password = f.read().strip().replace("password:", "").strip()
+                        sub_profiles[item] = password
+                pilot_profiles[folder] = {"zip": zip_file, "sub_profiles": sub_profiles}
+            else:
+                pass_path = os.path.join(folder_path, "infomation.txt")
+                password = None
+                if os.path.exists(pass_path):
+                    with open(pass_path, "r") as f:
+                        password = f.read().strip().replace("password:", "").strip()
+                tran_profiles[folder] = password
+    return tran_profiles, pilot_profiles
+def quan_li(profile, password, environment, zip_file):
+    profile_path = os.path.join(base_profile_path, environment, profile) if environment != "TRAN" else os.path.join(base_profile_path, profile)
+    chrome_options = Options()
+    chrome_options.add_argument(f"--user-data-dir={profile_path}")
+    chrome_options.add_argument("--start-maximized")
+    chrome_options.add_argument("--disable-gpu")  # Tắt GPU để tránh lỗi memory
+    chrome_options.add_argument("--log-level=3")
+    chrome_options.add_argument("--disable-features=WebGL,WebGL2")
+    chrome_options.add_argument("--enable-features=Canvas,WebGL,WebGL2")
+    prefs = {
+    "profile.default_content_setting_values": {
+        "images": 1,      # Load ảnh bình thường
+        "javascript": 1,  # Chạy JavaScript đầy đủ
+        "cookies": 1,      # Không chặn cookie
+        "popups": 1,       # Không chặn popup
+        "plugins": 1       # Load tất cả plugin
+    }
+}
+    chrome_options.add_experimental_option("prefs", prefs)
+    if zip_file and os.path.exists(zip_file):
+        chrome_options.add_extension(zip_file)
+    service = Service(ChromeDriverManager().install())
+    driver = webdriver.Chrome(service=service, options=chrome_options)
+    driver.get("https://tuongtaccheo.com")
+    try:
+        WebDriverWait(driver, 5).until(EC.presence_of_element_located((By.XPATH, '/html/body/div[1]/div/nav/div/div[2]/ul[2]/li[2]/a'))).click()
+        user = driver.find_element(By.XPATH, '/html/body/div[1]/div/div[4]/div/div[2]/form/input[1]')
+        user.send_keys(profile) 
+        passw = driver.find_element(By.XPATH, '/html/body/div[1]/div/div[4]/div/div[2]/form/input[2]')
+        passw.send_keys(password)  
+        driver.find_element(By.XPATH, '/html/body/div[1]/div/div[4]/div/div[2]/form/input[4]').click()
+    except:
+        print("Lỗi khi đăng nhập!")
+    driver.execute_script("window.open('https://facebook.com', '_blank');")
+    return driver, profile_path
+def thuc_thi(profile, password, environment, zip_file):
+    profile_path = os.path.join(base_profile_path, environment, profile) if environment != "TRAN" else os.path.join(base_profile_path, profile)
+    chrome_options = Options()
+    chrome_options.add_argument(f"--user-data-dir={profile_path}")
+    chrome_options.add_argument("--start-maximized")
+    chrome_options.add_argument('--disable-blink-features=AutomationControlled')
+    chrome_options.add_argument("--disable-notifications")
+    chrome_options.add_argument("--disable-infobars") 
+    chrome_options.add_argument("--disable-cache")
+    chrome_options.add_argument("--mute-audio") 
+    chrome_options.add_argument("--log-level=3") 
+    chrome_options.add_argument("--no-sandbox")
+    chrome_options.add_argument("--memory-pressure-off")
+    chrome_options.add_argument("--blink-settings=imagesEnabled=false")
+    chrome_options.add_argument("--disable-features=MediaEngagementBypassAutoplayPolicies")  # Chặn autoplay
+    chrome_options.add_argument("--autoplay-policy=no-user-gesture-required")  # Không cho phép phát video
+    chrome_options.add_argument("--disable-background-video-track")  # Không load video nền
+    chrome_options.add_argument("--disable-background-media-suspend")  # Tắt xử lý media nền
+    chrome_options.add_argument("--disable-webrtc-hw-decoding")  # Tắt giải mã video bằng GPU
+    chrome_options.add_argument("--disable-webrtc-hw-encoding")  # Tắt mã hóa video bằng GPU
+    for arg in [  
+    "--no-sandbox", "--disable-gpu", "--disable-software-rasterizer",  
+    "--disable-dev-shm-usage", "--disable-crash-reporter", "--disable-extensions",  
+    "--disable-in-process-stack-traces", "--disable-logging", "--disable-background-video-track",  
+    "--disable-features=MediaEngagementBypassAutoplayPolicies,PreloadMediaEngagementData,WebRTC,WebAudio,AutoplayIgnoreWebAudio",  
+    "--blink-settings=imagesEnabled=false", "--disable-sync", "--disable-background-timer-throttling",  
+    "--disable-backgrounding-occluded-windows", "--disable-renderer-backgrounding",  
+    ]: chrome_options.add_argument(arg)  
+    for arg in ["--disable-features=MediaEngagementBypassAutoplayPolicies,PreloadMediaEngagementData,WebRTC,WebAudio,AutoplayIgnoreWebAudio",
+            "--disable-background-video-track", "--disable-accelerated-video-decode", "--disable-software-rasterizer"]: chrome_options.add_argument(arg)  
+    chrome_options.add_argument("--disable-gesture-requirement-for-media-playback")  # Ngăn video chạy tự động
+    chrome_options.add_argument("--disable-animations")
+    chrome_options.add_argument("--disable-sync")  # Tắt đồng bộ Chrome
+    chrome_options.add_argument("--metrics-recording-only")  # Chỉ ghi nhận dữ liệu cần thiết
+    chrome_options.add_argument("--mute-audio")  # Tắt âm thanh (giảm xử lý đa phương tiện)
+    chrome_options.add_argument("--headless=new")
+    chrome_options.add_argument("--disable-popup-blocking")  # Tắt chặn pop-up (tránh lỗi)
+    chrome_options.add_argument("--disable-infobars")  # Ẩn thông báo "Chrome đang được điều khiển..."
+    chrome_options.add_argument("--disable-notifications")  # Chặn thông báo từ web
+    chrome_options.add_argument("--disable-save-password-bubble")  # Tắt gợi ý lưu mật khẩu
+    chrome_options.add_argument("--disable-translate")  # Tắt tính năng dịch của Chrome
+    chrome_options.add_argument("--disk-cache-size=1000000000")  # 1GB cache
+    chrome_options.add_argument("--disable-features=ScriptStreaming")  # Giảm tải xử lý JS
+    chrome_options.add_argument("--mute-audio")
+    chrome_options.add_argument("--process-per-site")  # Giảm số process của Chrome
+    chrome_options.add_argument("--disable-backgrounding-occluded-windows")  
+    chrome_options.add_argument("--disable-renderer-backgrounding")  
+    chrome_options.add_argument("--disable-features=ScriptStreaming") 
+    chrome_options.add_argument("--disable-dev-shm-usage") 
+    chrome_options.add_argument("--no-ssl-cert-check") 
+    chrome_options.add_argument("--disable-software-rasterizer")  
+    prefs = {"profile.managed_default_content_settings.images": 2, 
+    "profile.managed_default_content_settings.stylesheets": 2, 
+    "profile.managed_default_content_settings.fonts": 2}  
+    chrome_options.add_experimental_option("prefs", prefs) 
+    chrome_options.add_argument("--disable-gpu") 
+    chrome_options.add_argument("--window-size=1920,1080")
+    if zip_file and os.path.exists(zip_file):
+        chrome_options.add_extension(zip_file)
+    else:
+        chrome_options.add_argument("--disable-extensions")
+    service = Service(ChromeDriverManager().install())
+    driver = webdriver.Chrome(service=service, options=chrome_options)
+    url = ('https://tuongtaccheo.com')
+    driver.get(url)
+    try:
+        wait = WebDriverWait(driver, 10)
+        user = wait.until(EC.presence_of_element_located((By.ID, "name"))) 
+        user.send_keys(profile)
+        passw = wait.until(EC.presence_of_element_located((By.ID, "password")))
+        passw.send_keys(password)
+        login_button = wait.until(EC.element_to_be_clickable((By.XPATH, "//input[@type='submit']")))
+        login_button.click()
+    except Exception as e:
+        print(f"Lỗi: {e}")
+        time.sleep(0.1)
+    return driver, profile_path
+def care(profile, password, environment, zip_file):
+    profile_path = os.path.join(base_profile_path, environment, profile) if environment != "TRAN" else os.path.join(base_profile_path, profile)
+    chrome_options = Options()
+    chrome_options.add_argument(f"--user-data-dir={profile_path}")
+    chrome_options.add_argument("--start-maximized")
+    chrome_options.add_argument('--disable-blink-features=AutomationControlled')
+    chrome_options.add_argument("--disable-notifications")
+    chrome_options.add_argument("--disable-infobars")
+    chrome_options.add_argument("--disable-cache")
+    chrome_options.add_argument("--disable-gpu")  # Tắt GPU để tránh lỗi memory
+    chrome_options.add_argument("--log-level=3") 
+    chrome_options.add_argument("--mute-audio")
+    chrome_options.add_argument("--headless=new")
+    chrome_options.add_argument("--no-sandbox")  
+    chrome_options.add_argument("--disable-dev-shm-usage") 
+    chrome_options.add_argument("--no-ssl-cert-check")  
+    chrome_options.add_argument("--disable-software-rasterizer")  
+    prefs = {"profile.managed_default_content_settings.images": 2,  
+    "profile.managed_default_content_settings.stylesheets": 2,  
+    "profile.managed_default_content_settings.fonts": 2} 
+    chrome_options.add_experimental_option("prefs", prefs) 
+    chrome_options.add_argument("--disable-gpu") 
+    chrome_options.add_argument("--window-size=1920,1080")
+    if zip_file and os.path.exists(zip_file):
+        chrome_options.add_extension(zip_file)
+    service = Service(ChromeDriverManager().install())
+    driver = webdriver.Chrome(service=service, options=chrome_options)
+    url = ('https://facebook.com')
+    driver.get(url)
+    time.sleep(5)  # Đợi trang tải xo
+    return driver
+def tao_profile():
+    while True:
+        os.system('cls' if os.name == 'nt' else 'clear')
+        print(f"\n==== {YELLOW}TẠO {RED}CẤU HÌNH{RESET} ====")
+        print(f"\nPROJECT này {RED}không xuất dữ liệu{RESET} về máy chủ từ xa.")
+        print(f"và tôi {RED}không có nhu cầu{RESET} thu thập thông tin tài khoản của bạn.")
+        accound_ttc = input(f"\nNhập {GREEN}'TÊN ĐĂNG NHẬP TƯƠNG TÁC CHÉO'{RESET} của bạn: ").strip()
+        password_ttc = input(f"Nhập {GREEN}'MẬT KHẨU TƯƠNG TÁC CHÉO'{RESET} của bạn: ").strip()
+        options = Options()
+        options.add_argument("--headless")
+        options.add_argument("--disable-gpu")
+        service = Service(ChromeDriverManager().install())
+        driver = webdriver.Chrome(service=service, options=options)
+        try:
+            driver.get("https://tuongtaccheo.com")
+            WebDriverWait(driver, 5).until(EC.presence_of_element_located((By.XPATH, '/html/body/div[1]/div/nav/div/div[2]/ul[2]/li[2]/a'))).click()
+            user = driver.find_element(By.XPATH, '/html/body/div[1]/div/div[4]/div/div[2]/form/input[1]')
+            user.send_keys(accound_ttc)
+            passw = driver.find_element(By.XPATH, '/html/body/div[1]/div/div[4]/div/div[2]/form/input[2]')
+            passw.send_keys(password_ttc)
+            driver.find_element(By.XPATH, '/html/body/div[1]/div/div[4]/div/div[2]/form/input[4]').click()
+            WebDriverWait(driver, 2).until(EC.presence_of_element_located((By.XPATH, '/html/body/div[1]/div/nav/div/div[2]/ul[2]/li[2]/a/strong')))
+            profile_path = os.path.join(base_profile_path, accound_ttc)
+            if not os.path.exists(profile_path):
+                os.makedirs(profile_path)
+            info_file_path = os.path.join(profile_path, 'infomation.txt')
+            with open(info_file_path, 'w') as info_file:
+                info_file.write(f"password:{password_ttc}")
+            print(f"\nĐã tạo thêm cấu hình {GREEN}{accound_ttc}{RESET}")
+            countdown(3)
+            driver.quit()
+            break
+        except:
+            print(f"\n{RED}TÀI KHOẢN HOẶC MẬT KHẨU không chính xác{RESET},vui lòng thử lại.")
+            time.sleep(2)
+        finally:
+            driver.quit()
+def clean(profile_path):
+    files_to_keep = [
+        "Cookies",
+        "Login Data",
+        "Local State",
+        "Preferences",
+        "Secure Preferences",
+        "Bookmarks",
+        "infomation.txt"
+    ]
+    
+    folders_to_keep = [
+        "Default/Local Storage/leveldb",   # Cookie & LocalStorage
+        "Default/Session Storage",         # Trạng thái phiên đăng nhập
+        "Default/IndexedDB",               # Dữ liệu web
+        "Default/Sync Data",               # Đồng bộ tài khoản
+        "Default/Extension State",         # Trạng thái extension
+        "Default/Network",                 # Tránh mất kết nối
+    ]
+    
+    # 🔥 Các thư mục nên xóa để giảm dung lượng
+    folders_to_delete = [
+        "Default/Cache",                # Cache web
+        "Default/Service Worker",        # Service Workers
+        "Default/Code Cache",            # Code cache
+        "Default/Media Cache",           # Cache media (ảnh, video)
+        "Default/GPUCache",              # GPU cache
+        "Default/Storage/ext",           # Storage của extension
+        "Default/File System",           # File System API rác
+        "Default/AutofillStates",        # Trạng thái tự động điền
+    ]
+    
+    # 🗑 Xóa thư mục không quan trọng
+    for folder in folders_to_delete:
+        folder_path = os.path.join(profile_path, folder)
+        if os.path.exists(folder_path):
+            shutil.rmtree(folder_path, ignore_errors=True)
+    
+    # 🗑 Xóa file rác (trừ file quan trọng)
+    for item in os.listdir(profile_path):
+        item_path = os.path.join(profile_path, item)
+        if os.path.isfile(item_path) and item not in files_to_keep:
+            try:
+                os.remove(item_path)
+            except Exception as e:
+                pass
+def clear():
+    while True:
+        os.system('cls' if os.name == 'nt' else 'clear')
+        print(f"\n=== {YELLOW}CHỈNH SỬA {GREEN}CẤU HÌNH{RESET} ===")
+        print(f"[{RED}1{RESET}] Xóa CẤU HÌNH trong môi trường {RED}TRẦN{RESET}")
+        print(f"[{RED}2{RESET}] Xóa CẤU HÌNH trong môi trường {GREEN}PILOT{RESET}")
+        print(f"[{RED}3{RESET}] Xóa môi trường {GREEN}PILOT{RESET}")
+        choice = input().strip().lower()
+        if choice == "x":
+            return
+        tran_profiles, pilot_profiles = lay_data()
+        if choice == "1":
+            os.system('cls' if os.name == 'nt' else 'clear')
+            if not tran_profiles:
+                print(f"Không có {RED}CẤU HÌNH{RESET} nào trong môi trường TRẦN.")
+                countdown(3)
+                continue
+            print(f"\n=== MÔI TRƯỜNG {RED}TRẦN{RESET} ===")
+            for i, (profile, password) in enumerate(tran_profiles.items(), start=1):
+                print(f"[{RED}{i}{RESET}] {profile}")
+            sub_choice = input().strip().lower()
+            if sub_choice == "x":
+                continue
+            try:
+                sub_choice = int(sub_choice)
+                profile_to_delete = list(tran_profiles.keys())[sub_choice - 1]
+                profile_path = os.path.join(base_profile_path, profile_to_delete)
+                shutil.rmtree(profile_path)
+                print(f"Đã xóa CẤU HÌNH '{YELLOW}{profile_to_delete}{RESET}' trong {RED}MÔI TRƯỜNG TRẦN{RESET}.")
+                countdown(3)
+            except (ValueError, IndexError):
+                print(f"Lựa chọn {RED}không hợp lệ{RESET}!")
+                countdown(3)
+        elif choice == "2":
+            os.system('cls' if os.name == 'nt' else 'clear')
+            if not pilot_profiles:
+                print(f"Không có môi trường {GREEN}PILOT{RESET} nào.")
+                countdown(3)
+                continue
+            index_offset = 1
+            pilot_index_map = {}
+            for pilot_name, data in pilot_profiles.items():
+                print(f"\n {pilot_name} ({os.path.basename(data['zip'])}):")
+                for sub_profile, password in data["sub_profiles"].items():
+                    print(f"[{RED}{index_offset}{RESET}] {sub_profile}")
+                    pilot_index_map[index_offset] = (pilot_name, sub_profile)
+                    index_offset += 1
+            sub_choice = input().strip().lower()
+            if sub_choice == "x":
+                continue
+            try:
+                sub_choice = int(sub_choice)
+                pilot_name, profile_to_delete = pilot_index_map[sub_choice]
+                profile_path = os.path.join(base_profile_path, pilot_name, profile_to_delete)   
+                shutil.rmtree(profile_path)
+                print(f"Đã xóa CẤU HÌNH '{YELLOW}{profile_to_delete}{RESET}' trong {GREEN}{pilot_name}{RESET}.")
+                countdown(3)
+            except (ValueError, IndexError):
+                print(f"Lựa chọn {RED}không hợp lệ{RESET}!")
+                countdown(3)
+        elif choice == "3":
+            os.system('cls' if os.name == 'nt' else 'clear')
+            if not pilot_profiles:
+                print(f"Không có môi trường {GREEN}PILOT{RESET} nào.")
+                countdown(3)
+                continue
+            print(f"\n=== MÔI TRƯỜNG {GREEN}PILOT{RESET} ===")
+            pilot_list = list(pilot_profiles.keys())
+            for i, pilot_name in enumerate(pilot_list, start=1):
+                print(f"[{i}] {pilot_name}")
+            sub_choice = input().strip().lower()
+            if sub_choice == "x":
+                continue
+            try:
+                sub_choice = int(sub_choice)
+                pilot_to_delete = pilot_list[sub_choice - 1]
+                confirm = input(f"VIỆC XOÁ {GREEN}MÔI TRƯỜNG PILOT{RESET} SẼ {YELLOW}XOÁ LUÔN CÁC CẤU HÌNH BÊN TRONG{RESET}\n HÃY CHUYỂN RA MÔI TRƯỜNG TRẦN ĐỂ TRÁNH {RED}MẤT CẤU HÌNH{RESET} '{pilot_to_delete}'? \n({BLUE}'yes'{RESET} để xác nhận): ").strip().lower()
+                if confirm == "yes":
+                    shutil.rmtree(os.path.join(base_profile_path, pilot_to_delete))
+                    print(f"Đã xóa toàn bộ môi trường PILOT '{RED}{pilot_to_delete}{RESET}'.")
+                    countdown(3)
+                else:
+                    print(f"Hủy xóa {GREEN}môi trường PILOT{RESET}.")
+                    countdown(3)
+            except (ValueError, IndexError):
+                print(f"Lựa chọn {RED}không hợp lệ{RESET}!")
+                countdown(3)
+        else:
+            print(f"Lựa chọn {RED}không hợp lệ{RESET}!")
+            countdown(3)
+#defent proxy 
+def check_proxy(proxy):
+    ip, port, user, password = proxy.split(":")
+    proxy_url = f"http://{user}:{password}@{ip}:{port}"
+    proxies = {"http": proxy_url, "https": proxy_url}
+    check_urls = ["https://api64.ipify.org?format=text", "https://api.ipify.org?format=text"]
+    for url in check_urls:
+        try:
+            response = requests.get(url, proxies=proxies, timeout=5)
+            ip_type = "IPv6" if "api64" in url else "IPv4"
+            print(f"Proxy hoạt động{BLUE} ({ip_type}): {response.text}{RESET}")
+            countdown(5)
+            print(f"{GREEN}MÔI TRƯỜNG PILOT{RESET} đã được tạo thành công!")
+            countdown(5)
+            return True
+        except requests.exceptions.RequestException:
+            continue
+    
+    print(f"{RED}MÔI TRƯỜNG PILOT{RESET} Không thể tạo do proxy không hoạt động.")
+    time.sleep(3)
+    return False
+def create_proxy():
+    print(f"==== {YELLOW}TẠO {GREEN}PROXY PILOT{RESET}")
+    proxy_name = input(f"\nĐặt {GREEN}Tên{RESET} cho môi trường PILOT: ")
+    proxy = input(f"Nhập {RED}PROXY{RESET} theo định dạng (IP:PORT:USER:PASSWORD): ")
+    if not check_proxy(proxy):
+        return None
+    ip, port, user, password = proxy.split(":")
+    profile_tool_path = Path.home() / "Profile_tool"
+    proxy_folder = profile_tool_path / f"pilot_{proxy_name}"
+    zip_file_path = proxy_folder / f"{ip}.zip"
+    os.makedirs(proxy_folder, exist_ok=True)
+    manifest_content = {
+        "version": "1.0.0",
+        "manifest_version": 2,
+        "name": "Proxy Authentication",
+        "permissions": ["proxy", "tabs", "storage", "<all_urls>", "webRequest", "webRequestBlocking"],
+        "background": {"scripts": ["background.js"]}
+    }
+    background_content = f"""
+    var config = {{
+        mode: "fixed_servers",
+        rules: {{
+            singleProxy: {{
+                scheme: "http",
+                host: "{ip}",
+                port: parseInt("{port}")
+            }},
+            bypassList: ["localhost"]
+        }}
+    }};
+
+    chrome.proxy.settings.set({{ value: config, scope: "regular" }}, function(){{}});
+
+    chrome.webRequest.onAuthRequired.addListener(
+        function(details) {{
+            return {{ authCredentials: {{ username: "{user}", password: "{password}" }} }};
+        }},
+        {{ urls: ["<all_urls>"] }},
+        ["blocking"]
+    );
+    """
+    manifest_path = proxy_folder / "manifest.json"
+    background_path = proxy_folder / "background.js"
+    with open(manifest_path, "w") as f:
+        json.dump(manifest_content, f, indent=4)
+    with open(background_path, "w") as f:
+        f.write(background_content)
+    with zipfile.ZipFile(zip_file_path, "w", zipfile.ZIP_DEFLATED) as zipf:
+        zipf.write(manifest_path, "manifest.json")
+        zipf.write(background_path, "background.js")
+    os.remove(manifest_path)
+    os.remove(background_path)
+    time.sleep(5)
+    return zip_file_path
+def chuyen_profile():
+    profiles = [f for f in os.listdir(base_profile_path) if os.path.isdir(os.path.join(base_profile_path, f))]
+    profiles.sort()
+    tran_profiles = []
+    pilot_environments = {}
+    for profile in profiles:
+        profile_path = os.path.join(base_profile_path, profile)
+        if profile.startswith("pilot_"):
+            zip_files = [f for f in os.listdir(profile_path) if f.endswith('.zip')]
+            sub_profiles = [f for f in os.listdir(profile_path) if os.path.isdir(os.path.join(profile_path, f))]
+            ip = zip_files[0][:-4] if zip_files else "Không có IP"
+            pilot_environments[profile] = {
+                "ip": ip,
+                "sub_profiles": sub_profiles
+            }
+        else:
+            tran_profiles.append(profile)
+    print(f"{RED}Môi trường trần{RESET}:")
+    for profile in tran_profiles:
+        print(f"{RED}-{RESET} {profile}")
+    for env, details in pilot_environments.items():
+        ip = details["ip"]
+        sub_profiles = details["sub_profiles"]
+        print(f"\n{GREEN}Môi trường {env}{RESET} ({ip}):")
+        if sub_profiles:
+            for sub_profile in sub_profiles:
+                print(f"{GREEN}-{RESET} {sub_profile}")
+        else:
+            print(f":{RED}(Không có CẤU HÌNH){RESET}")
+    tran_profiles = [f for f in os.listdir(base_profile_path) if os.path.isdir(os.path.join(base_profile_path, f)) and not f.startswith("pilot_")]
+    pilots = [f for f in os.listdir(base_profile_path) if f.startswith("pilot_")]
+    os.system('cls' if os.name == 'nt' else 'clear')
+    print(f"\n=== {YELLOW}CHỈNH SỬA {GREEN}CẤU HÌNH{RESET} ===")
+    print(f"[{GREEN}1{RESET}] Chuyển đổi vào MÔI TRƯỜNG PILOT")
+    print(f"[{RED}2{RESET}] Xuất khỏi MÔI TRƯỜNG PILOT")
+    choice = input().strip()
+
+    if choice == "1":
+        if not tran_profiles:
+            print(f"{YELLOW}Không có{RESET} CẤU HÌNH nào trong môi trường trần!")
+            return
+        print(f"\nChọn CẤU HÌNH cần chuyển đổi vào {GREEN}MÔI TRƯỜNG PILOT{RESET}:")
+        for i, profile in enumerate(tran_profiles, 1):
+            print(f"[{i}] {profile}")
+        profile_choice = input().strip()
+        if not profile_choice.isdigit() or int(profile_choice) < 1 or int(profile_choice) > len(tran_profiles):
+            print(f"Lựa chọn {RED}không hợp lệ{RESET}!")
+            time.sleep(3)
+            return
+        selected_profile = tran_profiles[int(profile_choice) - 1]
+        if pilots:
+            print(f"\nChọn môi trường {GREEN}PILOT{RESET}:")
+            for i, pilot in enumerate(pilots, 1):
+                count = len([f for f in os.listdir(os.path.join(base_profile_path, pilot)) if os.path.isdir(os.path.join(base_profile_path, pilot, f))])
+                print(f"[{i}] {pilot} ({GREEN}{count}{RESET}/{RED}3{RESET})")
+            pilot_choice = input().strip()
+            if pilot_choice.isdigit() and 1 <= int(pilot_choice) <= len(pilots):
+                selected_pilot = pilots[int(pilot_choice) - 1]
+            else:
+                selected_pilot = f"pilot_{selected_profile}"
+                os.makedirs(os.path.join(base_profile_path, selected_pilot), exist_ok=True)
+        else:
+            selected_pilot = f"pilot_{selected_profile}"
+            os.makedirs(os.path.join(base_profile_path, selected_pilot), exist_ok=True)
+        pilot_path = os.path.join(base_profile_path, selected_pilot)
+        if len([f for f in os.listdir(pilot_path) if os.path.isdir(os.path.join(pilot_path, f))]) >= 3:
+            print(f"Môi trường {GREEN}PILOT{RED} đã đủ {RED}3{RESET} CẤU HÌNH!")
+            return
+        shutil.move(os.path.join(base_profile_path, selected_profile), pilot_path)
+        print(f"Đã chuyển {selected_profile} vào {GREEN}{selected_pilot}{RESET}")
+        time.sleep(3)
+    elif choice == "2":
+        if not pilots:
+            print(f"{YELLOW}Không có{RESET} môi trường PILOT!")
+            return
+        print(f"\nChọn môi trường {GREEN}PILOT{RESET}:")
+        for i, pilot in enumerate(pilots, 1):
+            print(f"[{GREEN}{i}{RESET}] {pilot}")
+        pilot_choice = input().strip()
+        if not pilot_choice.isdigit() or int(pilot_choice) < 1 or int(pilot_choice) > len(pilots):
+            print(f"Lựa chọn {RED}không hợp lệ{RESET}!")
+            return
+        selected_pilot = pilots[int(pilot_choice) - 1]
+        pilot_path = os.path.join(base_profile_path, selected_pilot)
+        profiles_in_pilot = [f for f in os.listdir(pilot_path) if os.path.isdir(os.path.join(pilot_path, f))]
+        if not profiles_in_pilot:
+            print(f"{YELLOW}Không có{RESET} CẤU HÌNH nào trong môi trường PILOT!")
+            return
+        print("\nChọn profile để đưa về MÔI TRƯỜNG TRẦN:")
+        for i, profile in enumerate(profiles_in_pilot, 1):
+            print(f"[{RED}{i}{RESET}] {profile}")
+        profile_choice = input().strip()
+        if not profile_choice.isdigit() or int(profile_choice) < 1 or int(profile_choice) > len(profiles_in_pilot):
+            print(f"Lựa chọn {RED}không hợp lệ{RESET}!")
+            time.sleep(3)
+            return
+        selected_profile = profiles_in_pilot[int(profile_choice) - 1]
+        shutil.move(os.path.join(pilot_path, selected_profile), base_profile_path)
+        print(f"Đã chuyển {selected_profile} về {RED}MÔI TRƯỜNG TRẦN{RESET}!")
+        time.sleep(3)
+    else:
+        print(f"Lựa chọn {RED}không hợp lệ{RESET}!")
+        time.sleep(3)
+#defent version
+def read_versions():
+    if not VERSION_FILE.exists():
+        return {} 
+    with open(VERSION_FILE, "r", encoding="utf-8") as f:
+        lines = f.readlines()
+    versions = {}
+    for line in lines:
+        try:
+            version, status = line.strip().split(": ")
+            versions[version] = status
+        except ValueError:
+            pass
+    return versions
+def write_versions(versions):
+    with open(VERSION_FILE, "w", encoding="utf-8") as f:
+        for version, status in versions.items():
+            f.write(f"{version}: {status}\n")
+def check_update():
+    versions = read_versions()
+    if CURRENT_VERSION not in versions:
+        versions[CURRENT_VERSION] = "chưa cập nhật thông tin"
+        write_versions(versions)
+    for version, status in versions.items():
+        if status == "chưa cập nhật thông tin":
+            banner(version)
+            return
+# define chức năng
+def facebook_all():
+    tran_profiles, pilot_profiles = lay_data()
+    drivers = []
+    for profile, password in tran_profiles.items():
+        driver, profile_path = quan_li(profile, password, "TRAN", None)
+        drivers.append(driver)
+    for pilot_name, data in pilot_profiles.items():
+        zip_file = data["zip"]
+        for sub_profile, password in data["sub_profiles"].items():
+            driver, profile_path = quan_li(sub_profile, password, pilot_name, zip_file)
+            drivers.append(driver)
+    input(f"\nNhấn {RED}Enter{RESET} để đóng tất cả trình duyệt...")
+    for driver in drivers:
+        driver.quit()
+    countdown(3)
+    print("Đã đóng tất cả trình duyệt.")
+def facebook():
+    profile, password, environment, zip_file = chon_profile()
+    driver, profile_path = quan_li(profile, password, environment, zip_file)
+    os.system('cls' if os.name == 'nt' else 'clear')
+    print(profile_path)
+    khuyen_cao()
+    input(f"\nNhấn {RED}Enter{RESET} để đóng trình duyệt...")
+    driver.quit()
+    clean(profile_path)
+def comment(profile=None):
+    profile, password, environment, zip_file = chon_profile()
+    driver, profile_path = thuc_thi(profile, password, environment, zip_file)
+    driver.find_element(By.XPATH, '/html/body/div[1]/div/nav/div/div[2]/ul[1]/li[2]/a').click()
+    driver.find_element(By.XPATH, '/html/body/div/div/nav/div/div[2]/ul[1]/li[2]/ul/li[7]/a').click()
+    os.system('cls' if os.name == 'nt' else 'clear')
+    khuyen_cao()
+    def cmt_post():
+            global success_count
+            while running:
+                try:
+                    time.sleep(2)
+                    if not running:  # Kiểm tra nếu cần dừng
+                        driver.quit()
+                        break
+                    noidung = [
+                    '/html/body/div/div/div[2]/div/div[1]/div/div[1]/div[2]/div[2]/ul/textarea[1]',
+                    '/html/body/div/div/div[2]/div/div[1]/div/div[1]/div[2]/div[2]/ul/textarea[2]',
+                    '/html/body/div/div/div[2]/div/div[1]/div/div[1]/div[2]/div[2]/ul/textarea[3]',
+                    '/html/body/div/div/div[2]/div/div[1]/div/div[1]/div[2]/div[2]/ul/textarea[4]',
+                    '/html/body/div/div/div[2]/div/div[1]/div/div[1]/div[2]/div[2]/ul/textarea[5]'
+                ]
+                    random_xpath = random.choice(noidung)
+                    try:
+                        noidungjob = driver.find_element(By.XPATH, random_xpath)
+                        textcomment = noidungjob.text
+                    except:
+                        noidungjob = driver.find_element(By.XPATH, "/html/body/div/div/div[2]/div/div[1]/div/div[1]/div[2]/div[2]/ul/textarea[1]")
+                        textcomment = noidungjob.text
+                    driver.find_element(By.XPATH, '/html/body/div/div/div[2]/div/div[1]/div/div[1]/div[1]/div/button').click()
+                    print(f'{GREEN}        I SEE {RESET} JOB {BLUE}CMT{RESET}                      ', end = '\r')
+                    time.sleep(1)
+                    break
+                except NoSuchElementException:
+                    WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, '/html/body/div/div/div[2]/div/div[2]/button'))).click()
+                    print(f'{RED}        LOADING{RESET} JOB                          ', end = '\r');time.sleep(3); print('                                                        ', end = '\r')
+
+            handles = driver.window_handles
+            driver.switch_to.window(handles[1])
+            try:
+                driver.execute_script("window.scrollBy(0, 500);")
+                driver.execute_script("window.scrollBy(0, -500);")
+                driver.execute_script("window.scrollBy(0, 500);")
+                driver.execute_script("window.scrollBy(0, -500);")
+                driver.execute_script("window.scrollBy(0, 500);")  
+                driver.execute_script("window.scrollBy(0, -500);")
+                def get_comment_box():
+                    try:
+                        modals = driver.find_elements(By.XPATH, '//div[@role="dialog"]//div[@aria-label="Đóng"]')
+                        if modals:
+                            modal = modals[0].find_element(By.XPATH, "./ancestor::div[@role='dialog']")
+                            return modal.find_element(By.XPATH, './/div[@aria-label="Viết bình luận"]')
+                        else:
+                            reels = driver.find_elements(By.XPATH, '/html/body/div[1]/div/div[1]/div/div[5]/div/div/div[3]/div[2]/div/div/div[1]/div/div[2]/div/div/div[2]/div[1]/div/div/div[2]/div[2]/div/div/div/div[4]/div/div/div/div[1]/div')
+                            if reels:
+                                ActionChains(driver).move_to_element(reels).click().perform()
+                                return WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, driver.find_element(By.XPATH, '//div[contains(text(), "Viết bình luận")]'))))
+                            else:
+                                return driver.find_element(By.XPATH, '//div[@aria-label="Viết bình luận"]')
+                    except:
+                        raise Exception("Lỗi này được tạo ra theo yêu cầu!")
+                cmt = get_comment_box()
+                try:
+                    ActionChains(driver).move_to_element(cmt).click().perform()
+                    countdown(5)
+                    ActionChains(driver).move_to_element(cmt).click().perform()
+                    ActionChains(driver).send_keys(textcomment).send_keys(Keys.ENTER).perform()
+                except:
+                    time.sleep(0.1)
+                text_to_find = 'Giờ bạn chưa dùng được tính năng này'
+                try:
+                        WebDriverWait(driver, 2).until(EC.presence_of_element_located((By.XPATH, f"//*[contains(text(), '{text_to_find}')]")))
+                        return False
+                except:
+                        time.sleep(0.1)
+                driver.switch_to.window(handles[0])
+                sodu_xpath = "/html/body/div/div/nav/div/div[2]/ul[2]/li[2]/a/strong"
+                oldsodu = driver.find_element(By.XPATH, sodu_xpath)
+                soducu = int(oldsodu.text.replace(",", ""))
+                driver.find_element(By.XPATH, '/html/body/div/div/div[2]/div/div[1]/div/div[1]/div[1]/div/button').click()
+                start_time = time.time()
+                while time.time() - start_time < 5:
+                            newsodu = driver.find_element(By.XPATH, sodu_xpath)
+                            sodumoi = int(newsodu.text.replace(",", ""))
+                            if sodumoi != soducu:  # Ngay khi số dư thay đổi, thoát vòng lặp
+                                break
+                            time.sleep(0.1)  # Kiểm tra mỗi 0.1 giây để phản ứng nhanh
+                now = datetime.now()
+                time_format = now.strftime("%H:%M:%S")
+                if sodumoi > soducu:
+                        dop = sodumoi - soducu
+                        success_count += 1
+                        success(success_count, time_format, dop, sodumoi, profile)
+                handles = driver.window_handles
+                driver.switch_to.window(handles[1])
+                time.sleep(0.5)
+                try:
+                        driver.find_element(By.XPATH, '//div[@aria-label="Chỉnh sửa hoặc xóa bình luận này"]').click()    
+                        WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, '//div[@role="menuitem"]//span[text()="Xóa"]'))).click()
+                        try:
+                            WebDriverWait(driver, 1).until(EC.element_to_be_clickable((By.XPATH, "//div[@role='button'][@aria-label='Xóa']"))).click()
+                        except:
+                            WebDriverWait(driver, 1).until(EC.element_to_be_clickable((By.XPATH, "//div[@role='dialog']//div[@role='button'][@aria-label='Xóa']"))).click()
+                        time.sleep(1)
+                except:
+                        time.sleep(0.0001)
+            except:
+                print(f'          [{RED}FAIL CMT{RESET}]              ', end = '\r');time.sleep(2); print('                                                        ', end = '\r') 
+                time.sleep(0.001)
+            return True
+            
+    while running:
+        try:
+            # check die commen 
+            #if not cmt_post():
+                #os.system('cls' if os.name == 'nt' else 'clear')
+                #tiping('\nCẤU HÌNH của bạn đã bị CHẶN COMMENT', delay=0.05)
+                #tiping('CHÚNG TÔI rất lấy làm tiếc về điều đó !!!!', delay=0.05)
+                #tiping('-------------------------------------------', delay=0.02)
+                #driver.quit()
+                #print(f"\nHệ Thống Đang {GREEN}CHUYỂN HƯỚNG VỀ MENU{RESET}, vui lòng chờ đợi")
+                #countdown(10)
+                #break
+            if cmt_post():
+                handles = driver.window_handles
+                driver.switch_to.window(handles[1])
+                driver.close()
+                handles = driver.window_handles
+                driver.switch_to.window(handles[0])
+                try:
+                    driver.find_element(By.XPATH, '/html/body/div/div/div[2]/div/div[1]/div/div[1]/div[1]/div/button').click()
+                    time.sleep(1)
+                except:
+                    time.sleep(0.1)
+                driver.refresh() 
+        except:
+            driver.quit()
+            tiping('có một số lỗi trong project nhưng chúng tôi lười sửa lắm', delay=0.05)
+            tiping('-------------------------------------------', delay=0.02)
+            driver.quit()
+            print(f"\nHệ Thống Đang {GREEN}KHỞI ĐỘNG LẠI{RESET}, vui lòng chờ đợi")
+            driver, profile_path = thuc_thi(profile, password, environment, zip_file)
+            driver.find_element(By.XPATH, '/html/body/div[1]/div/nav/div/div[2]/ul[1]/li[2]/a').click()
+            driver.find_element(By.XPATH, '/html/body/div/div/nav/div/div[2]/ul[1]/li[2]/ul/li[7]/a').click()
+            countdown(5)
+            continue
+
+def like(profile=None):
+    profile, password, environment, zip_file = chon_profile()
+    driver, profile_path = thuc_thi(profile, password, environment, zip_file)
+    driver.find_element(By.XPATH, '/html/body/div[1]/div/nav/div/div[2]/ul[1]/li[2]/a').click()
+    driver.find_element(By.XPATH, '/html/body/div/div/nav/div/div[2]/ul[1]/li[2]/ul/li[2]/a').click()
+    os.system('cls' if os.name == 'nt' else 'clear')
+    khuyen_cao()
+    def get_jobs():
+        global jobs_dict
+        jobs_dict.clear()
+        time.sleep(2)
+        index = 1
+        while True:
+            try:
+                xpath = f"/html/body/div/div/div[2]/div/div[1]/div/div[{index}]/div/div/button"
+                driver.find_element(By.XPATH, xpath)
+                jobs_dict[index] = xpath
+                index += 1
+            except:
+                break
+    def like_post():
+        global jobs_dict, success_count
+        while running:
+            handles = driver.window_handles
+            if len(handles) > 1:  
+                    driver.switch_to.window(handles[1])
+                    if bluesea_id in AUTHORIZED_PRO_DEVICES:
+                        driver.get("about:blank")
+                    else:
+                        driver.close()
+            else:
+                if bluesea_id in AUTHORIZED_PRO_DEVICES:
+                    driver.execute_script("window.open('', '_blank');")
+            driver.switch_to.window(handles[0])
+            get_jobs()
+            if not jobs_dict:
+                driver.refresh()  
+                print(f'{RED}        LOADING{RESET} JOB                          ', end = '\r');time.sleep(1); print('                                                        ', end = '\r')
+                countdown(10)
+                continue
+            for job_id, job_xpath in list(jobs_dict.items()):
+                handles = driver.window_handles
+                if len(handles) > 1:  
+                    driver.switch_to.window(handles[1])
+                    if bluesea_id in AUTHORIZED_PRO_DEVICES:
+                        driver.get("about:blank")
+                    else:
+                        driver.close()
+                    time.sleep(0.5)
+                else:
+                    if bluesea_id in AUTHORIZED_PRO_DEVICES:
+                        driver.execute_script("window.open('', '_blank');")
+                driver.switch_to.window(handles[0])
+                if not running:  # Kiểm tra nếu cần dừng
+                    driver.quit()
+                    break
+                print(f'{GREEN}        I SEE{RESET} {len(jobs_dict)} JOB {BLUE}LIKE{RESET}                      ', end = '\r')
+                button = driver.find_element(By.XPATH, job_xpath)
+                if bluesea_id in AUTHORIZED_PRO_DEVICES:
+                    link = button.get_attribute("title").strip("'")
+                    driver.execute_script("""
+    if (!window._originalOpen) {
+        window._originalOpen = window.open;  // Lưu bản gốc
+    }
+    window.open = function() { console.log('🚫 Chặn mở tab'); return null; };
+""")
+                    button.click()
+                    driver.execute_script("window.open = window._originalOpen || window.open;")
+                    time.sleep(1)
+                    handles = driver.window_handles
+                    if len(handles) > 1:  # Khi tab mới xuất hiện
+                            driver.switch_to.window(handles[1])  # Chuyển sang tab mới
+                            driver.execute_cdp_cmd("Page.addScriptToEvaluateOnNewDocument", {"source": delete_script})
+                            time.sleep(1)
+                            driver.get(link)  # Mở link mong muốn
+                    else:
+                        continue
+                else:
+                    button.click()
+                    time.sleep(2)
+                    handles = driver.window_handles
+                    driver.switch_to.window(handles[1])
+                driver.execute_script("window.scrollBy(0, 500);")
+                driver.execute_script("window.scrollBy(0, -500);")
+                driver.execute_script("window.scrollBy(0, 500);")
+                driver.execute_script("window.scrollBy(0, -500);")
+                driver.execute_script("window.scrollBy(0, 500);")  
+                driver.execute_script("window.scrollBy(0, -500);")
+                found = False 
+                try:
+                    try:
+                        # like
+                        modal = driver.find_element(By.XPATH, '//div[@role="dialog"]//div[@aria-label="Đóng"]').find_element(By.XPATH, "./ancestor::div[@role='dialog']")
+                        like = WebDriverWait(modal, 5).until(EC.presence_of_element_located((By.XPATH, './/div[@aria-label="Thích"]')))
+                    except:
+                        like = driver.find_element(By.XPATH, '//div[@aria-label="Thích"]')
+                    try:
+                        found = True
+                        ActionChains(driver).move_to_element(like).perform()
+                        countdown(1)
+                        ActionChains(driver).move_to_element(like).click().perform()
+                        countdown(1)
+                    except:
+                        time.sleep(0.1)
+                    if found:
+                            handles = driver.window_handles
+                            driver.switch_to.window(handles[0])
+                            sodu_xpath = "/html/body/div[1]/div/nav/div/div[2]/ul[2]/li[2]/a/strong"
+                            oldsodu = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, sodu_xpath)))
+                            soducu = int(oldsodu.text.replace(",", ""))
+                            driver.find_element(By.XPATH, job_xpath).click()
+                            if not running:  # Kiểm tra nếu cần dừng
+                                driver.quit()
+                                break
+                            start_time = time.time()
+                            while time.time() - start_time < 5:
+                                newsodu = driver.find_element(By.XPATH, sodu_xpath)
+                                sodumoi = int(newsodu.text.replace(",", ""))
+                                if sodumoi != soducu:  # Ngay khi số dư thay đổi, thoát vòng lặp
+                                    break
+                                time.sleep(0.1)  # Kiểm tra mỗi 0.1 giây để phản ứng nhanh
+                            now = datetime.now()
+                            time_format = now.strftime("%H:%M:%S")
+                            if not running:  # Kiểm tra nếu cần dừng
+                                driver.quit()
+                                break
+                            if sodumoi > soducu:
+                                dop = sodumoi - soducu
+                                success_count += 1
+                                success(success_count, time_format, dop, sodumoi, profile)
+                            handles = driver.window_handles
+                            driver.switch_to.window(handles[1])
+                            text_to_find = 'Giờ bạn chưa dùng được tính năng này'
+                            try:
+                                WebDriverWait(driver, 1).until(EC.presence_of_element_located((By.XPATH, f"//*[contains(text(), '{text_to_find}')]")))
+                                return False
+                            except Exception as e:
+                                time.sleep(0.5)
+                            try:
+                                ActionChains(driver).move_to_element(like).click().perform()
+                            except:
+                                
+                                try:
+                                    modal = driver.find_element(By.XPATH, '//div[@role="dialog"]//div[@aria-label="Đóng"]').find_element(By.XPATH, "./ancestor::div[@role='dialog']")
+                                    like = WebDriverWait(modal, 5).until(EC.presence_of_element_located((By.XPATH, './/div[@aria-label="Thích"]')))
+                                except:
+                                    like = driver.find_element(By.XPATH, '//div[@aria-label="Thích"]')
+                                ActionChains(driver).move_to_element(like).click().perform()
+                            print(f'          [{GREEN}PASS{RESET}]              ', end = '\r');time.sleep(2); print('                                                        ', end = '\r') 
+    
+                    else:
+                        print(f'          [{RED}FAIL{RESET}]              ', end = '\r');time.sleep(2); print('                                                        ', end = '\r') 
+            
+
+                except Exception as e:
+                    print(f'          [{RED}FAIL LIKE{RESET}]              ', end = '\r');time.sleep(2); print('                                                        ', end = '\r') 
+                del jobs_dict[job_id]
+    while running:
+        try:
+            if not like_post():
+                os.system('cls' if os.name == 'nt' else 'clear')
+                tiping('\nCẤU HÌNH của bạn đã bị CHẶN LIKE', delay=0.05)
+                tiping('CHÚNG TÔI rất lấy làm tiếc về điều đó !!!!', delay=0.05)
+                tiping('-------------------------------------------', delay=0.02)
+                driver.quit()
+                print(f"\nHệ Thống Đang {GREEN}CHUYỂN HƯỚNG VỀ MENU{RESET}, vui lòng chờ đợi")
+                countdown(10)
+                break
+            if not running:  # Kiểm tra nếu cần dừng
+                driver.quit()
+                break  
+        except Exception as e:
+            print(e)
+            driver.quit()
+            tiping('có một số lỗi trong project nhưng chúng tôi lười sửa lắm', delay=0.05)
+            tiping('-------------------------------------------', delay=0.02)
+            driver.quit()
+            print(f"\nHệ Thống Đang {GREEN}KHỞI ĐỘNG LẠI{RESET}, vui lòng chờ đợi")
+            driver, profile_path = thuc_thi(profile, password, environment, zip_file)
+            driver.find_element(By.XPATH, '/html/body/div[1]/div/nav/div/div[2]/ul[1]/li[2]/a').click()
+            driver.find_element(By.XPATH, '/html/body/div/div/nav/div/div[2]/ul[1]/li[2]/ul/li[2]/a').click()
+            countdown(5)
+            continue
+def emotion():
+    profile, password, environment, zip_file = chon_profile()
+    driver, profile_path = thuc_thi(profile, password, environment, zip_file)
+    driver.find_element(By.XPATH, '/html/body/div[1]/div/nav/div/div[2]/ul[1]/li[2]/a').click()
+    driver.find_element(By.XPATH, '/html/body/div[1]/div/nav/div/div[2]/ul[1]/li[2]/ul/li[4]/a').click()
+    os.system('cls' if os.name == 'nt' else 'clear')
+    khuyen_cao()
+    def get_jobs():
+        global jobs_dict
+        jobs_dict.clear()
+        time.sleep(2)
+        index = 1
+        while True:
+            try:
+                xpath= f"/html/body/div[1]/div/div[2]/div/div[1]/div/div[{index}]/div/div/button"
+                driver.find_element(By.XPATH, xpath)
+                jobs_dict[index] = xpath
+                index += 1
+            except:
+                break
+    def emotion_post():
+        global jobs_dict, success_count
+        while running:
+            handles = driver.window_handles
+            if len(handles) > 1:  
+                    driver.switch_to.window(handles[1])
+                    driver.close()
+                    time.sleep(0.5)
+            driver.switch_to.window(handles[0])
+            get_jobs()
+            if not jobs_dict:
+                driver.refresh()   
+                print(f'{RED}        LOADING{RESET} JOB                          ', end = '\r');time.sleep(1); print('                                                        ', end = '\r')
+                countdown(10)
+                continue
+            for job_id, job_xpath in list(jobs_dict.items()):
+                handles = driver.window_handles
+                if len(handles) > 1:  
+                    driver.switch_to.window(handles[1])
+                    driver.close()
+                    time.sleep(0.4)
+                driver.switch_to.window(handles[0])
+                if not running:  # Kiểm tra nếu cần dừng
+                    driver.quit()
+                    break
+                emotional = driver.find_element(By.XPATH, job_xpath)  
+                onclick_content = emotional.get_attribute("onclick")
+                # Tách lấy loại cảm xúc
+                reaction = onclick_content.split(",")[-1].strip()
+                reaction = re.sub(r"[^A-ZÀ-Ỹ]", "", reaction)  # Chỉ giữ lại chữ cái
+                emotional.click()
+                print(f'{GREEN}        I SEE{RESET} JOB {BLUE}{reaction}{RESET}                      ', end = '\r')
+                time.sleep(2)
+                handles = driver.window_handles
+                if len(handles) > 1:  
+                    driver.switch_to.window(handles[1])
+                else:
+                    continue 
+                if not running:
+                    break
+                time.sleep(0.1)
+                driver.execute_script("window.scrollBy(0, 500);")
+                driver.execute_script("window.scrollBy(0, -500);")
+                driver.execute_script("window.scrollBy(0, 500);")
+                driver.execute_script("window.scrollBy(0, -500);")
+                driver.execute_script("window.scrollBy(0, 500);")  
+                driver.execute_script("window.scrollBy(0, -500);")
+                like_xpaths = [
+        "/html/body/div[1]/div/div[1]/div/div[5]/div/div/div[2]/div/div/div/div/div/div/div/div[2]/div[2]/div/div/div/div/div/div/div/div/div/div/div/div/div[13]/div/div/div[4]/div/div/div[1]/div/div[2]/div/div[1]/div[1]/div[1]/div[1]/span/i",  # Xpath bình thường
+        "/html/body/div[1]/div/div[1]/div/div[3]/div/div/div[1]/div[2]/div/div/div/div[1]/div/div/div[1]/div[2]/div[2]/div/div/div[1]/div/div[1]/div[1]/div[1]/span",  # Xpath video
+        "/html/body/div[1]/div/div[1]/div/div[3]/div/div/div[1]/div[1]/div/div/div[1]/div/div[2]/div/div/div/div[1]/div/div/div[2]/div[2]/div/div/div/div[3]/div/div/div/div[1]/div",
+        "/html/body/div[1]/div/div[1]/div/div[3]/div/div/div[1]/div[1]/div[4]/div/div/div/div/div/div/div/div/div/div/div/div/div/div/div/div/div/div/div/div/div/div/div[13]/div/div/div[4]/div/div/div[1]/div/div[2]/div/div[1]/div[1]/div[1]/div[1]",
+        "/html/body/div[1]/div/div[1]/div/div[3]/div/div/div[1]/div[1]/div/div/div[2]/div/div/div[1]/div/div/div[2]/div[2]/div/div[1]/span/div/div/span/div[1]/div/div/span",
+        "/html/body/div[1]/div/div[1]/div/div[3]/div/div/div[1]/div[2]/div/div/div/div[1]/div/div/div[1]/div[2]/div[2]/div/div/div[1]/div/div[1]/div[1]/div[1]/span/i",
+        "/html/body/div[1]/div/div[1]/div/div[3]/div/div/div[1]/div[1]/div/div[3]/div/div/div[4]/div/div/div/div/div/div/div/div/div/div/div/div/div/div/div/div/div/div[2]/div/div/div[4]/div/div/div[1]/div/div[2]/div/div[1]/div[1]",
+        "/html/body/div[1]/div/div[1]/div/div[5]/div/div/div[2]/div/div/div/div/div/div/div/div[2]/div[2]/div/div/div/div/div/div/div/div/div/div/div/div/div[2]/div/div/div[4]/div/div/div[1]/div/div[2]/div/div[1]/div[1]",
+        "/html/body/div[1]/div/div[1]/div/div[3]/div/div/div[1]/div[1]/div/div/div[2]/div/div/div[1]/div/div/div[2]/div[2]/div/div[1]/span/div/div/span/div[1]/div",
+        "/html/body/div[1]/div/div[1]/div/div[3]/div/div/div[1]/div[1]/div/div/div[1]/div/div[2]/div/div/div/div[1]/div/div/div[2]/div[2]/div/div/div/div[3]/div/div/div/div[1]/div",
+        "/html/body/div[1]/div/div[1]/div/div[3]/div/div/div[1]/div[1]/div[4]/div/div/div/div/div/div/div/div/div/div/div/div/div/div/div/div/div/div[13]/div/div/div[4]/div/div/div[1]/div/div[2]/div/div[1]/div[1]",
+        "/html/body/div[1]/div/div[1]/div/div[3]/div/div/div[1]/div[1]/div/div/div[1]/div/div/div/div/div/div[1]/div/div/div[2]/div[2]/div/div/div/div[3]/div/div",
+        "/html/body/div[1]/div/div[1]/div/div[3]/div/div/div[1]/div[1]/div/div[2]/div/div/div[4]/div/div/div/div/div/div/div/div/div/div/div/div/div/div/div/div/div/div/div[13]/div/div/div[4]/div/div/div[1]/div/div[2]/div/div[1]/div[1]",
+        "/html/body/div[1]/div/div[1]/div/div[3]/div/div/div[1]/div[1]/div/div[2]/div/div/div/div[1]/div[2]/div/div[2]/div/div[1]/div[1]",
+        "/html/body/div[1]/div/div[1]/div/div[3]/div/div/div[1]/div[1]/div/div[2]/div/div/div[4]/div/div/div/div/div/div/div/div/div/div/div/div/div/div/div/div/div/div[13]/div/div/div[4]/div/div/div[1]/div/div[2]/div/div[1]/div[1]",
+        "/html/body/div[1]/div/div[1]/div/div[3]/div/div/div[1]/div[1]/div/div/div[4]/div[2]/div/div[2]/div[2]/div[1]/div/div/div/div/div/div/div/div/div/div/div/div[13]/div/div/div[4]/div/div/div[1]/div/div[2]/div/div[1]/div[1]",
+        "/html/body/div[1]/div/div[1]/div/div[3]/div/div/div[1]/div[1]/div/div[2]/div/div/div/div[1]/div[3]/div/div[2]/div/div[1]/div[1]",
+        "/html/body/div[1]/div/div[1]/div/div[3]/div/div/div[1]/div[1]/div[2]/div/div[2]/div[1]/div[3]/div/div/div/div/div[1]/div/div[1]",
+        "/html/body/div[1]/div/div[1]/div/div[3]/div/div/div[1]/div[1]/div[4]/div/div/div/div/div/div/div/div[2]/div/div/div/div/div/div/div/div/div/div/div[13]/div/div/div[4]/div/div/div[1]/div/div[2]/div/div[1]/div[1]",
+        "/html/body/div[1]/div/div[1]/div/div[3]/div/div/div[1]/div[1]/div/div/div[1]/div[2]/div/div/div/div[4]/div/div/div[2]/div/div",
+        "/html/body/div[1]/div/div[1]/div/div[3]/div/div/div[1]/div[1]/div/div[2]/div/div/div[4]/div/div/div/div/div/div/div/div/div/div/div/div/div/div/div/div/div/div/div[2]/div/div/div[4]/div/div/div[1]/div/div[2]/div/div[1]/div[1]"
+    ]
+                found = False
+                try:
+                    for xpath in like_xpaths:
+                        try:
+                            element = driver.find_element(By.XPATH, xpath)
+                            found = True
+                            actions = ActionChains(driver)
+                            actions.move_to_element(element).perform()
+                            countdown(5)
+                            mapped_reaction = reaction_map.get(reaction)
+                            if mapped_reaction:
+                                try:
+                                    reaction_button = driver.find_element(By.XPATH, f'//div[@aria-label="{mapped_reaction}"]')
+                                    reaction_button.click()
+                                except:
+                                    time.sleep(0.1)
+                            time.sleep(0.7)
+                            break
+                        except:
+                            continue
+                    if found:
+                        handles = driver.window_handles
+                        driver.switch_to.window(handles[0])
+                        sodu_xpath = "/html/body/div[1]/div/nav/div/div[2]/ul[2]/li[2]/a/strong"
+                        oldsodu = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, sodu_xpath)))
+                        soducu = int(oldsodu.text.replace(",", ""))
+                        driver.find_element(By.XPATH, job_xpath).click()
+                        if not running:  # Kiểm tra nếu cần dừng
+                            driver.quit()
+                            break
+                        start_time = time.time()
+                        while time.time() - start_time < 5:
+                            newsodu = driver.find_element(By.XPATH, sodu_xpath)
+                            sodumoi = int(newsodu.text.replace(",", ""))
+                            if sodumoi != soducu:  # Ngay khi số dư thay đổi, thoát vòng lặp
+                                break
+                            time.sleep(0.1)  # Kiểm tra mỗi 0.1 giây để phản ứng nhanh
+                        now = datetime.now()
+                        time_format = now.strftime("%H:%M:%S")
+                        if not running:  # Kiểm tra nếu cần dừng
+                            driver.quit()
+                            break
+                        if sodumoi > soducu:
+                            dop = sodumoi - soducu
+                            success_count += 1
+                            success(success_count, time_format, dop, sodumoi)
+                    
+                        handles = driver.window_handles
+                        driver.switch_to.window(handles[1])
+                        text_to_find = 'Giờ bạn chưa dùng được tính năng này'
+                        try:
+                            WebDriverWait(driver, 1).until(EC.presence_of_element_located((By.XPATH, f"//*[contains(text(), '{text_to_find}')]")))
+                            return False
+                        except Exception as e:
+                            time.sleep(0.2)
+                            for xpath in like_xpaths:
+                                try:
+                                    like_button = driver.find_element(By.XPATH, xpath)
+                                    like_button.click()
+                                    time.sleep(2)
+                                    break
+                                except:
+                                    continue
+                    else:
+                        driver.switch_to.window(handles[0])
+                        emotional.click()
+                        time.sleep(2)
+                        print(f'          [{RED}FAIL LIKE{RESET}]              ', end = '\r');time.sleep(2); print('                                                        ', end = '\r') 
+                    if not running:  # Kiểm tra nếu cần dừng
+                        driver.quit()
+                        break
+                except Exception as e:
+                    continue
+                del jobs_dict[job_id]
+    while running:
+        try:
+            if not emotion_post():
+                os.system('cls' if os.name == 'nt' else 'clear')
+                tiping('\nCẤU HÌNH của bạn đã bị CHẶN LIKE', delay=0.05)
+                tiping('CHÚNG TÔI rất lấy làm tiếc về điều đó !!!!', delay=0.05)
+                tiping('-------------------------------------------', delay=0.02)
+                driver.quit()
+                print(f"\nHệ Thống Đang {GREEN}CHUYỂN HƯỚNG VỀ MENU{RESET}, vui lòng chờ đợi")
+                countdown(10)
+                break
+            if not running:  # Kiểm tra nếu cần dừng
+                driver.quit()
+                break  
+        except:
+            driver.quit()
+            tiping('có một số lỗi trong project nhưng chúng tôi lười sửa lắm', delay=0.05)
+            tiping('-------------------------------------------', delay=0.02)
+            driver.quit()
+            print(f"\nHệ Thống Đang {GREEN}KHỞI ĐỘNG LẠI{RESET}, vui lòng chờ đợi")
+            driver, profile_path = thuc_thi(profile, password, environment, zip_file)
+            driver.find_element(By.XPATH, '/html/body/div[1]/div/nav/div/div[2]/ul[1]/li[2]/a').click()
+            driver.find_element(By.XPATH, '/html/body/div[1]/div/nav/div/div[2]/ul[1]/li[2]/ul/li[4]/a').click()
+            countdown(5)
+            continue
+def smart_care(profile=None):
+    tran_profiles, pilot_profiles = lay_data()
+    print(f"\n=== MÔI TRƯỜNG {RED}TRẦN{RESET} ===")
+    for i, (profile, password) in enumerate(tran_profiles.items(), start=1):
+        print(f"[{YELLOW}{i}{RESET}] {profile}")
+    index_offset = len(tran_profiles) + 1
+    pilot_index_map = {}
+    if pilot_profiles:
+        for pilot_name, data in pilot_profiles.items():
+            zip_file = data.get("zip")
+            zip_name = os.path.basename(zip_file) if zip_file else "Không có ZIP"
+            print(f"=== {GREEN}{pilot_name}{RESET} ({zip_name}) ===")
+            for sub_profile, password in data["sub_profiles"].items():
+                print(f"[{YELLOW}{index_offset}{RESET}] {sub_profile}")
+                pilot_index_map[index_offset] = (pilot_name, sub_profile)
+                index_offset += 1
+    choice = int(input())
+    if choice in range(1, len(tran_profiles) + 1):
+        profile = list(tran_profiles.keys())[choice - 1]
+        password = tran_profiles[profile]
+        environment = "TRAN"
+        zip_file = None
+    elif choice in pilot_index_map:
+        pilot_name, profile = pilot_index_map[choice]
+        password = pilot_profiles[pilot_name]["sub_profiles"][profile]
+        environment = pilot_name
+        zip_file = pilot_profiles[pilot_name].get("zip")
+    else:
+        print(f"Lựa chọn {RED}không hợp lệ{RESET}!")
+        time.sleep(3)
+        return
+    driver = care(profile, password, environment, zip_file)
+    def feed(driver, duration=60):
+        start_time = time.time()
+        end_time = start_time + duration  
+        with Progress() as progress:
+            task = progress.add_task("[RED] Đang chạy...", total=duration)
+            while time.time() < end_time:
+                try:
+                    driver.find_element(By.XPATH, '/html/body/div[1]/div/div[1]/div/div[2]/div[4]/div/div[1]/div[1]/ul/li[1]/span/div/a').click()
+                    time.sleep(1.5)
+                except Exception:
+                    print("Không vào được News Feed")
+                scroll_height = random.randint(300, 800)
+                driver.execute_script(f"window.scrollBy(0, {scroll_height});")
+                if random.random() < 0.1: 
+                    like_xpath = "/html/body/div[1]/div/div[1]/div/div[3]/div/div/div[1]/div[1]/div/div[2]/div/div/div/div[2]/div/div[4]/div/div[2]/div[1]/div/div/div/div/div/div/div/div/div/div/div/div/div/div[13]/div/div/div[4]/div/div/div/div/div[2]/div/div[1]/div[1]"
+                    try:
+                        like_button = driver.find_element(By.XPATH, like_xpath)
+                        like_button.click()
+                        print("Đã nhấn Like")
+                        time.sleep(random.uniform(2, 5))
+                    except:
+                        print("Không tìm thấy nút Like")
+                progress.update(task, advance=random.uniform(5, 10))
+                if time.time() >= end_time:
+                    break  
+                time.sleep(random.uniform(5, 10))  
+    countdown(10)
+    feed(driver, duration=120)
+    print("✅ Đã hoàn thành 1 phiên feed.") 
+    input()
+    driver.quit()
+    os.system('cls' if os.name == 'nt' else 'clear')
+    khuyen_cao()
+def da_luong():
+    bill = 0
+    tran_profiles, pilot_profiles = lay_data()
+    selected_profiles = []  
+    while True:
+        os.system('cls' if os.name == 'nt' else 'clear')
+        print("=== DANH SÁCH CẤU HÌNH ĐÃ CHỌN ===")
+        if selected_profiles:
+            for profile, environment in selected_profiles:
+                print(f"- {RED}{profile} ({environment}){RESET}")
+        else:
+            print(f"{YELLOW}Chưa có cấu hình nào được chọn!{RESET}")
+
+        print("\n=== DANH SÁCH CẤU HÌNH CHƯA CHỌN ===")
+        profile_index_map = {} 
+        print(f"\n{BLUE}--- MÔI TRƯỜNG TRẦN ---{RESET}")
+        index = 1
+        for profile, password in tran_profiles.items():
+            if (profile, "TRAN") not in selected_profiles:
+                print(f"[{index}] {profile}")
+                profile_index_map[index] = (profile, password, "TRAN", None)
+                index += 1
+
+        # Hiển thị các profile PILOT
+        if pilot_profiles:
+            for pilot_name, data in pilot_profiles.items():
+                zip_file = data.get("zip")
+                zip_name = os.path.basename(zip_file) if zip_file else "Không có ZIP"
+                print(f"\n{GREEN}--- {pilot_name} ({zip_name}) ---{RESET}")
+                for sub_profile, password in data["sub_profiles"].items():
+                    if (sub_profile, pilot_name) not in selected_profiles:
+                        print(f"[{index}] {sub_profile}")
+                        profile_index_map[index] = (sub_profile, password, pilot_name, zip_file)
+                        index += 1
+        cauhinh = input(f"\nChọn {GREEN}CẤU HÌNH{RESET} (hoặc X để hoàn tất): ").strip().upper()
+
+        # Xử lý lựa chọn
+        if cauhinh.isdigit() and int(cauhinh) in profile_index_map:
+            selected_profile = profile_index_map[int(cauhinh)]
+            profile_name, _, environment, _ = selected_profile
+            if (profile_name, environment) not in selected_profiles:
+                selected_profiles.append((profile_name, environment))
+        elif cauhinh == "X":
+            break
+        else:
+            print(f"{RED}Lựa chọn không hợp lệ, vui lòng thử lại!{RESET}")
+            time.sleep(2)
+    drivers = {}
+    for i, (profile, environment) in enumerate(selected_profiles, start=1):
+        password = None
+        zip_file = None
+        if environment == "TRAN":
+            password = tran_profiles[profile]
+        else:
+            for pilot_name, data in pilot_profiles.items():
+                if pilot_name == environment and profile in data["sub_profiles"]:
+                    password = data["sub_profiles"][profile]
+                    zip_file = data.get("zip")
+                    break
+        # Khởi tạo driver
+        driver_name = f"driver{i}"
+        drivers[driver_name] = thuc_thi(profile, password, environment, zip_file)
+        driver = drivers[driver_name]  # Gán driver từ dictionary
+
+        driver.find_element(By.XPATH, '/html/body/div[1]/div/nav/div/div[2]/ul[1]/li[2]/a').click()
+        driver.find_element(By.XPATH, '/html/body/div/div/nav/div/div[2]/ul[1]/li[2]/ul/li[7]/a').click()
+        if not running:
+            driver.quit()
+            break
+        time.sleep(2)
+        sodu = drivers[driver_name].find_element(By.XPATH, '/html/body/div/div/nav/div/div[2]/ul[2]/li[2]/a/strong')
+        bill += int(sodu.text.replace(",", ""))
+        print(f"Cấu hình {RED}{profile} {GREEN}SẴN SÀNG{RESET} với số dư: {YELLOW}{bill}{RESET}")
+    khuyen_cao()
+    drivers_list = list(drivers.values())
+    khuyen_cao()
+    def cmt_post(driver):
+            global success_count
+            while running:
+                try:
+                    time.sleep(2)
+                    if not running:  # Kiểm tra nếu cần dừng
+                        driver.quit()
+                        break
+                    noidung = [
+                    '/html/body/div/div/div[2]/div/div[1]/div/div[1]/div[2]/div[2]/ul/textarea[1]',
+                    '/html/body/div/div/div[2]/div/div[1]/div/div[1]/div[2]/div[2]/ul/textarea[2]',
+                    '/html/body/div/div/div[2]/div/div[1]/div/div[1]/div[2]/div[2]/ul/textarea[3]',
+                    '/html/body/div/div/div[2]/div/div[1]/div/div[1]/div[2]/div[2]/ul/textarea[4]',
+                    '/html/body/div/div/div[2]/div/div[1]/div/div[1]/div[2]/div[2]/ul/textarea[5]'
+                ]
+                    random_xpath = random.choice(noidung)
+                    try:
+                        noidungjob = driver.find_element(By.XPATH, random_xpath)
+                        textcomment = noidungjob.text
+                    except:
+                        noidungjob = driver.find_element(By.XPATH, "/html/body/div/div/div[2]/div/div[1]/div/div[1]/div[2]/div[2]/ul/textarea[1]")
+                        textcomment = noidungjob.text
+                    driver.find_element(By.XPATH, '/html/body/div/div/div[2]/div/div[1]/div/div[1]/div[1]/div/button').click()
+                    print(f'{GREEN}        I SEE {RESET} JOB {BLUE}CMT{RESET}                      ', end = '\r')
+                    time.sleep(1)
+                    break
+                except NoSuchElementException:
+                    WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, '/html/body/div/div/div[2]/div/div[2]/button'))).click()
+                    print(f'{RED}        LOADING{RESET} JOB                          ', end = '\r');time.sleep(3); print('                                                        ', end = '\r')
+
+            handles = driver.window_handles
+            driver.switch_to.window(handles[1])
+            try:
+                driver.execute_script("window.scrollBy(0, 500);")
+                driver.execute_script("window.scrollBy(0, -500);")
+                driver.execute_script("window.scrollBy(0, 500);")
+                driver.execute_script("window.scrollBy(0, -500);")
+                driver.execute_script("window.scrollBy(0, 500);")  
+                driver.execute_script("window.scrollBy(0, -500);")
+                def get_comment_box():
+                    try:
+                        modals = driver.find_elements(By.XPATH, '//div[@role="dialog"]//div[@aria-label="Đóng"]')
+                        if modals:
+                            modal = modals[0].find_element(By.XPATH, "./ancestor::div[@role='dialog']")
+                            return modal.find_element(By.XPATH, './/div[@aria-label="Viết bình luận"]')
+                        else:
+                            reels = driver.find_elements(By.XPATH, './/div[@aria-label="Bình luận"]')
+                            if reels:
+                                ActionChains(driver).move_to_element(reels).click().perform()
+                                return WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, driver.find_element(By.XPATH, '//div[contains(text(), "Viết bình luận")]'))))
+                            else:
+                                return driver.find_element(By.XPATH, '//div[@aria-label="Viết bình luận"]')
+                    except:
+                        raise Exception("Lỗi này được tạo ra theo yêu cầu!")
+                cmt = get_comment_box()
+                try:
+                    ActionChains(driver).move_to_element(cmt).click().perform()
+                    countdown(5)
+                    ActionChains(driver).move_to_element(cmt).click().perform()
+                    ActionChains(driver).send_keys(textcomment).send_keys(Keys.ENTER).perform()
+                except:
+                    time.sleep(0.1)
+                text_to_find = 'Giờ bạn chưa dùng được tính năng này'
+                try:
+                        WebDriverWait(driver, 2).until(EC.presence_of_element_located((By.XPATH, f"//*[contains(text(), '{text_to_find}')]")))
+                        return False
+                except:
+                        time.sleep(0.1)
+                driver.switch_to.window(handles[0])
+                sodu_xpath = "/html/body/div/div/nav/div/div[2]/ul[2]/li[2]/a/strong"
+                oldsodu = driver.find_element(By.XPATH, sodu_xpath)
+                soducu = int(oldsodu.text.replace(",", ""))
+                driver.find_element(By.XPATH, '/html/body/div/div/div[2]/div/div[1]/div/div[1]/div[1]/div/button').click()
+                start_time = time.time()
+                while time.time() - start_time < 5:
+                            newsodu = driver.find_element(By.XPATH, sodu_xpath)
+                            sodumoi = int(newsodu.text.replace(",", ""))
+                            if sodumoi != soducu:  # Ngay khi số dư thay đổi, thoát vòng lặp
+                                break
+                            time.sleep(0.1)  # Kiểm tra mỗi 0.1 giây để phản ứng nhanh
+                now = datetime.now()
+                time_format = now.strftime("%H:%M:%S")
+                if sodumoi > soducu:
+                        dop = sodumoi - soducu
+                        success_count += 1
+                        sodu = bill + dop
+                        print(f"[{success_count}]{RED}{time_format}{RESET}|BẠN ĐÃ ĐỚP{YELLOW}|>{dop}<|{RESET}SỐ DƯ: {YELLOW}{sodu}{RESET}|")
+                        bill = sodu 
+                handles = driver.window_handles
+                driver.switch_to.window(handles[1])
+                time.sleep(0.5)
+                try:
+                        driver.find_element(By.XPATH, '//div[@aria-label="Chỉnh sửa hoặc xóa bình luận này"]').click()    
+                        WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, '//div[@role="menuitem"]//span[text()="Xóa"]'))).click()
+                        try:
+                            WebDriverWait(driver, 1).until(EC.element_to_be_clickable((By.XPATH, "//div[@role='button'][@aria-label='Xóa']"))).click()
+                        except:
+                            WebDriverWait(driver, 1).until(EC.element_to_be_clickable((By.XPATH, "//div[@role='dialog']//div[@role='button'][@aria-label='Xóa']"))).click()
+                        time.sleep(1)
+                except:
+                        time.sleep(0.0001)
+            except:
+                print(f'          [{RED}FAIL CMT{RESET}]              ', end = '\r');time.sleep(2); print('                                                        ', end = '\r') 
+                time.sleep(0.001)
+            return True
+    def main(driver):
+        global running
+        while running:
+            try:
+                if not cmt_post(driver):
+                    driver.quit()
+                    break
+                else:
+                    handles = driver.window_handles
+                    driver.switch_to.window(handles[1])
+                    driver.close()
+                    handles = driver.window_handles
+                    driver.switch_to.window(handles[0])
+                    try:
+                        driver.find_element(By.XPATH, '/html/body/div/div/div[2]/div/div[1]/div/div[1]/div[1]/div/button').click()
+                        time.sleep(1)
+                    except:
+                        time.sleep(0.1)
+                    driver.refresh() 
+            except:
+                driver.quit()
+                time.sleep(10)
+                driver = thuc_thi(profile, password, environment, zip_file)
+                drivers[driver_name] = thuc_thi(profile, password, environment, zip_file)
+                drivers[driver_name].find_element(By.XPATH, '/html/body/div[1]/div/nav/div/div[2]/ul[1]/li[2]/a').click()
+                drivers[driver_name].find_element(By.XPATH, '/html/body/div/div/nav/div/div[2]/ul[1]/li[2]/ul/li[7]/a').click()
+                countdown(5)
+                continue
+            
+    thread_list = []
+    for driver in drivers_list:
+        thread = threading.Thread(target=main, args=(driver,))
+        thread.start()
+        thread_list.append(thread)
+    for thread in thread_list:
+        thread.join()
+
+
+
+
+# define hiển thị
+def chon_profile():
+    """
+    Lấy dữ liệu từ `lay_data()`, sắp xếp danh sách profile theo thứ tự, 
+    hiển thị danh sách profile và cho phép người dùng chọn.
+    """
+    def thu_tu(danh_sach):
+        """Sắp xếp danh sách theo số thứ tự ở cuối, nếu không có số thì sắp xếp theo chữ cái."""
+        def extract_key(profile):
+            match = re.search(r'(\d+)$', profile)  # Tìm số ở cuối
+            return (int(match.group(1)) if match else float('inf'), profile)
+
+        return sorted(danh_sach, key=extract_key)
+
+    # Lấy dữ liệu từ `lay_data()`
+    tran_profiles, pilot_profiles = lay_data()
+
+    # Sắp xếp danh sách TRAN
+    danh_sach_tran = thu_tu(list(tran_profiles.keys()))
+
+    print(f"\n=== MÔI TRƯỜNG {RED}TRẦN{RESET} ===")
+    for i, profile in enumerate(danh_sach_tran, start=1):
+        print(f"[{YELLOW}{i}{RESET}] {profile}")
+
+    index_offset = len(danh_sach_tran) + 1
+    pilot_index_map = {}
+
+    if pilot_profiles:
+        for pilot_name, data in pilot_profiles.items():
+            zip_file = data.get("zip")
+            zip_name = os.path.basename(zip_file) if zip_file else "Không có ZIP"
+            print(f"=== {GREEN}{pilot_name}{RESET} ({zip_name}) ===")
+
+            danh_sach_pilot = thu_tu(list(data["sub_profiles"].keys()))
+
+            for sub_profile in danh_sach_pilot:
+                print(f"[{YELLOW}{index_offset}{RESET}] {sub_profile}")
+                pilot_index_map[index_offset] = (pilot_name, sub_profile)
+                index_offset += 1
+
+    try:
+        choice = int(input("         [X] để quay về menu chính: " ))
+    except ValueError:
+        return None, None, None, None
+
+    if choice in range(1, len(danh_sach_tran) + 1):
+        profile = danh_sach_tran[choice - 1]
+        password = tran_profiles[profile]
+        environment = "TRAN"
+        zip_file = None
+    elif choice in pilot_index_map:
+        pilot_name, profile = pilot_index_map[choice]
+        password = pilot_profiles[pilot_name]["sub_profiles"][profile]
+        environment = pilot_name
+        zip_file = pilot_profiles[pilot_name].get("zip")
+    else:
+        print(f"{RED}Lựa chọn không hợp lệ!{RESET}")
+        time.sleep(3)
+        return None, None, None, None
+
+    return profile, password, environment, zip_file
+def banner():
+    os.system('cls' if os.name == 'nt' else 'clear')
+    time.sleep(2)
+    tiping(f"\n=== BLUESEA PROJECT _3.BETA ===", delay=0.05)
+    time.sleep(2)
+    os.system('cls' if os.name == 'nt' else 'clear')
+    time.sleep(2)
+    print(f"\n=== {BLUE}BLUESEA PROJECT{RESET}_2.Trial ===")
+    tiping(f"   một phiên bản mang khá nhiều sai sót về vấn đề PROXY ( IP ) với số lượng lớn CẤU HÌNH", delay=0.05)
+    time.sleep(2)
+    os.system('cls' if os.name == 'nt' else 'clear')
+    nhapnhay(f"VẬY!  'PROXY'  là gì ?", times=3)
+    time.sleep(2)
+    proxy_explanation = """
+    PROXY ( MÁY CHỦ TRUNG GIAN )
+    LÀ một hệ thống hoặc máy chủ hoạt động như một "cầu nối" giữa người dùng và Internet. 
+    Khi bạn truy cập một trang web thông qua proxy 
+    thay vì kết nối trực tiếp, yêu cầu của bạn sẽ đi qua proxy trước, rồi mới đến trang web đích.
+
+    CÁCH HOẠT ĐỘNG CỦA PROXY ĐỐI VỚI PROJECT:
+   1. khi bạn sử dụng PROJECT → HOẠT ĐỘNG của PROJECT được gửi đến máy chủ proxy.
+   2. Proxy thay mặt PROJECT gửi yêu cầu → Máy chủ proxy nhận yêu cầu và chuyển tiếp nó đến trang web đích.
+   3. Nhận phản hồi → Trang web đích phản hồi lại với proxy, rồi proxy gửi dữ liệu đó về PROJECT.
+
+    LỢI ÍCH CỦA PROXY:
+   - Ẩn địa chỉ IP TRẦN, tăng cường quyền riêng tư.
+   - Vượt qua giới hạn truy cập nội dung bị chặn.
+   - Cải thiện bảo mật khi duyệt web.
+   - Tăng tốc độ truy cập bằng bộ nhớ đệm (caching).
+
+
+    TÁC DỤNG CỦA PROXY ĐỐI VỚI CẤU HÌNH:
+    Khi quản lý nhiều tài khoản Facebook, việc sử dụng proxy là rất quan trọng vì:
+
+    ---Tránh bị phát hiện và khóa tài khoản:  
+      - Facebook có cơ chế phát hiện nếu nhiều tài khoản đăng nhập từ cùng một địa chỉ IP, dễ bị đánh dấu là "hành vi đáng ngờ" và có thể bị khóa.  
+      - Sử dụng proxy giúp mỗi tài khoản có một IP khác nhau, giống như chúng được đăng nhập từ các vị trí khác nhau.
+
+    ---Hạn chế checkpoint (Xác minh danh tính, 282, 956):  
+      - Nếu Facebook thấy có nhiều tài khoản cùng đăng nhập từ một địa chỉ, nó có thể yêu cầu xác minh danh tính.  
+      - Dùng proxy giúp tạo môi trường đăng nhập tự nhiên hơn.
+
+    ---Quản lý tài khoản dễ dàng hơn:  
+      - Có thể dùng các loại Proxy để giả lập vị trí của từng tài khoản.  
+
+    ---Tăng hiệu quả khi SỬ DỤNG CẤU HÌNH:
+      - Khi quản lý nhiều tài khoản để sử dụng project, tránh bị Facebook gắn cờ là "PHÁT HIỆN TỰ ĐỘNG HOÁ".  
+      - Proxy giúp tạo ra mạng lưới tài khoản sạch, hạn chế bị đánh dấu là spam.
+
+    ! Lưu ý khi sử dụng proxy để quản lý nhiều tài khoản Facebook:  
+      - Không nên sử dụng các proxy công khai miễn phí vì có thể bị Facebook đánh dấu.  
+      - Nên dùng proxy có chất lượng tốt, ưu tiên ĐẶT MUA TẠI ADMIN để giảm rủi ro.  
+    """
+    time.sleep(2)
+    tiping((proxy_explanation), delay=0.08)
+    input(f"\nNhấn {RED}Enter{RESET} để tiếp tục...")
+    os.system('cls' if os.name == 'nt' else 'clear')
+    time.sleep(2)
+    print(f"        CÁC TÍNH NĂNG {GREEN}MỚI NỔI BẬT{RESET}")
+    proxy_explanation = """
+    Ở phiên bản mới này, chúng tôi mang đến một hệ thống quản lí môi trường cực kì mới mang tên PROXY PILOT
+    ---HỆ MÔI TRƯỜNG MỚI TRONG PROJECT:
+    -MÔI TRƯỜNG 'TRẦN':
+      Là loại môi trường sử dụng IP gốc của máy tính, không sử dụng proxy.
+      Là loại môi trường mặc định khi bạn thêm một cấu hình mới
+
+    -MÔI TRƯỜNG 'PILOT (PROXY PILOT)':
+        Là loại môi trường sử dụng proxy, giúp tạo ra môi trường đăng nhập tự nhiên hơn.
+        Mỗi môi trường PILOT được tạo thành công sẽ có tên đặt riêng và một IP proxy cố định
+        Mỗi môi trường PILOT được tạo thành công chỉ quản lí tối đa '3' CẤU HÌNH
+    
+    -PROJECT hỗ trợ người dùng:
+      -TẠO và QUẢN LÍ môi trường PROXY PILOT
+      -CHUYỂN ĐỔI qua lại CẤU HÌNH giữa môi trường TRẦN và môi trường PILOT
+    """
+    tiping((proxy_explanation), delay=0.08)
+    input(f"\nNhấn {RED}Enter{RESET} để tiếp tục...")
+    os.system('cls' if os.name == 'nt' else 'clear')
+    time.sleep(2)
+    tiping(("\nĐỂ cho bạn dễ hình dung thì đây là mô phỏng lại 2 loại MÔI TRƯỜNG"), delay=0.08)
+    tiping("\n📂 Cơ sở dữ liệu PROJECT", delay=0.08)
+
+    # In môi trường TRAN
+    tiping(" ├── 📂 TRAN (Môi trường trần - Hồ sơ độc lập)", delay=0.08)
+    tran_profiles = ["CẤU HÌNH 1", "CẤU HÌNH 2", "CẤU HÌNH 3"] 
+    for profile in tran_profiles:
+        tiping(f" │    ├── 🗂 {profile}  (Không có proxy)", delay=0.08)
+
+    # In môi trường PILOT
+    tiping(" ├── 📂 PILOT (Môi trường pilot - Có Proxy)", delay=0.08)
+    pilot_envs = {
+        "Pilot_A": ["CẤU HÌNH 4", "CẤU HÌNH 5", "CẤU HÌNH 6"],
+        "Pilot_B": ["CẤU HÌNH 7", "CẤU HÌNH 8"],
+        "Pilot_C": ["CẤU HÌNH 9", "CẤU HÌNH 10"]
+    }
+
+    index = 0
+    for pilot, sub_profiles in pilot_envs.items():
+        tiping(f" │    ├── 📂 {pilot}  (Dùng Proxy {index + 1})", delay=0.08)
+        for sub_profile in sub_profiles:
+            tiping(f" │    │    ├── 🗂 {sub_profile}", delay=0.08)
+        index += 1
+
+
+
+    input(f"\nNhấn {RED}Enter{RESET} để tiếp tục...")
+    os.system('cls' if os.name == 'nt' else 'clear')
+    tiping(f"\nCHÚNG TÔI SẼ SỚM CÓ BẢN CẬP NHẬT HOÀN CHỈNH HƠN TRONG THỜI GIAN SẮP TỚI", delay=0.05)
+    tiping(f"BẠN ĐÃ CÓ THỂ TRẢI NGHIỆM PROXY PILOT ở PHẦN CHỈNH SỬA CẤU HÌNH", delay=0.05)
+    tiping(f"CẢM ƠN VÌ ĐÃ TRẢI NGHIỆM PROJECT CỦA CHÚNG TÔI", delay=0.05)
+    print(f"\n=== {BLUE}BLUESEA PROJECT{RESET}_3 ===")
+    print(f"----------copyright: HACKER NGUYEN VAN DUNGDUNG")
+    print(f"   QUẢN TRỊ CẤU HÌNH")
+    print(f"[1] MỞ TẤT CẢ CẤU HÌNH")
+    print(f"[2] MỞ CHỈ ĐỊNH CẤU HÌNH")
+    print(f"[{YELLOW}3{RESET}] CHỈNH SỬA CẤU HÌNH                {RED}<---{RESET}")
+    print(f"   HOẠT ĐỘNG CẤU HÌNH")  
+    print(f"[4] COMMENT POST ANTI BLOCK")
+    print(f"[5] LIKE POST ANTI BLOCK")
+    print(f"[COMING SOON] SMATCARE")
+    print(f"[COMING SOON] MUTIPLE OPITON")
+    print(f"        [X] Thoát chương trình")
+    countdown(10)
+def tiping(text, delay):
+    for char in text:
+        sys.stdout.write(char)
+        sys.stdout.flush()
+        time.sleep(delay)
+    print()  
+def nhapnhay(text, times=5, delay=0.3):
+    for _ in range(times):
+        sys.stdout.write(f"\r{text}")
+        sys.stdout.flush()
+        time.sleep(delay)
+        sys.stdout.write("\r" + " " * len(text))  
+        sys.stdout.flush()
+        time.sleep(delay)
+    sys.stdout.write(f"\r{text}\n")  
+def option_menu():
+        os.system('cls' if os.name == 'nt' else 'clear')
+        print(f"\n=== {BLUE}CHỈNH SỬA CẤU HÌNH{RESET} ===")
+        print(f"[{RED}1{RESET}] PROXY PILOT")
+        print(f"[{RED}2{RESET}] Chuyển Đổi môi trường")
+        print(f"[{GREEN}3{RESET}] Thêm mới CẤU HÌNH")
+        print(f"[{GREEN}4{RESET}] Xóa CẤU HÌNH")
+        choice = input("         [X] để quay về menu chính: " ).strip()
+        if choice == "1":
+            create_proxy()
+        elif choice == "2":
+            chuyen_profile()
+        elif choice == "3":
+            tao_profile()
+        elif choice == "4":
+            clear()
+        elif choice == "X":
+            print("Quay lại menu chính.")
+        else:
+            print("Lựa chọn không hợp lệ, vui lòng thử lại.")
+def success(success_count, time_format, dop, sodumoi, profile):
+    print(f"[{success_count}]{RED}{time_format}{RESET}|{profile}{YELLOW}|>+{dop}<|{RESET}SỐ DƯ: {YELLOW}{sodumoi}{RESET}|")
+def khuyen_cao():
+    os.system('cls' if os.name == 'nt' else 'clear')
+    print(f"\nNHỮNG ĐIỀU CẦN {YELLOW}LƯU Ý{RESET}")
+    print(f"------------------------")
+    print(f"[3] {RED}KHÔNG{RESET} ĐÓNG TRÌNH DUYỆT THỦ CÔNG.")
+    print(f"[4] {RED}KHÔNG NÊN{RESET} TIẾN HÀNH SỬ DỤNG NGAY HOẠT ĐỘNG CẤU HÌNH.")
+    print(f"[1] {GREEN}CẦN{RESET} ĐĂNG NHẬP TÀI KHOẢN FACEBOOK ĐỂ CHẠY CẤU HÌNH.")
+    print(f"[2] {GREEN}CẦN{RESET} ĐẢM BẢO TÀI KHOẢN FACEBOOK ĐƯỢC ĐẶT LÀM NICK CHẠY.")
+    print(f"[3] {GREEN}CẦN{RESET} ĐỢI 24-48H ĐỂ ĐẢM BẢO TÀI KHOẢN FACEBOOK ĐƯỢC TIN CẬY.")
+    print(f"------------------------")
+    print(f"[!] {RED}HOẠT ĐỘNG CẤU HÌNH{RESET} khả dụng khi bạn đã LOGIN nick chạy đã {GREEN}liên kết{RESET} với tuongtaccheo.")
+    print(f"[!] {RED}ANTI BLOCK{RESET} được hoạt động {YELLOW}ỔN ĐỊNH{RESET} khi tài khoản Facebook được {GREEN}tin cậy{RESET}")
+    print(f"[!] {RED}ANTI BLOCK{RESET} được hoạt động {GREEN}TỐI ĐA{RESET} với những tài khoản {GREEN}VIA tin cậy{RESET}")
+    print(f"TÔI sẽ sớm cập nhật giáo án sử dụng hơp lí Project để tránh tình trạng khoá >{RED}282,956...{RESET}<")
+    print(f"ĐÂY là một PROJECT {RED}lỗi{RESET} vì được chuyển đổi từ hệ điều hành {GREEN}MACOS{RESET}")
+    print(f"Nên khi chạy trên {GREEN}windows{RESET} sẽ có một số {RED}lỗi hiển thị nhỏ{RESET}, TÔI đang cố khắc phục")
+    print(f"^-^ chúc bạn 'ĐỚP NGẬP MỒM' với {BLUE}BLUESEA PROJECT{RESET}")
+    print(f"------------------------")
+def countdown(duration):
+    spinner = itertools.cycle(["^", "<", "v", ">"])  # Hiệu ứng xoay vòng
+    start_time = time.time()
+    
+    while time.time() - start_time < duration:
+        elapsed_time = time.time() - start_time
+        remaining_time = duration - elapsed_time
+        if remaining_time > duration * 0.6:
+            color = "green"
+        elif remaining_time > duration * 0.3:
+            color = "yellow"
+        else:
+            color = "red"
+        console.print(f"\r          [bold {color}]Đang xử lý... {next(spinner)}", end="\r")
+        time.sleep(0.0000001)
+    console.print("\r          [bold red]Hoàn thành ", end="\r")
+bluesea_id = generate_bluesea_id()
+if bluesea_id in AUTHORIZED_PRO_DEVICES:
+    gioihan = 1000000000000000000
+    owner = AUTHORIZED_PRO_DEVICES[bluesea_id]
+    print(f"=== {YELLOW}CHÀO MỪNG{RESET} ===\r")
+    while True:
+        os.system('cls' if os.name == 'nt' else 'clear')
+        print(f"\n=== {BLUE}BLUESEA PROJECT{RESET}_3.Pro ===")
+        print(f"----------copyright: HACKER NGUYEN VAN DUNG")
+        print(f"   {YELLOW}QUẢN TRỊ CẤU HÌNH{RESET}")
+        print(f"[{YELLOW}1{RESET}] MỞ TẤT CẢ CẤU HÌNH")
+        print(f"[{YELLOW}2{RESET}] MỞ CHỈ ĐỊNH CẤU HÌNH")
+        print(f"[{YELLOW}3{RESET}] CHỈNH SỬA CẤU HÌNH")
+        print(f"   {RED}HOẠT ĐỘNG CẤU HÌNH{RESET}")  
+        print(f"[{GREEN}4{RESET}] COMMENT FAB")
+        print(f"[{GREEN}5{RESET}] LIKE FAB")
+        print(f"[{GREEN}6{RESET}] EMOTIONAL FAB  {RED}[NEW]{RESET}")
+        print(f"[{GREEN}7{RESET}] MUTIPLE OPITON")
+        print(f"[{RED}COMING SOON{RESET}] SMARTCARE")
+        print(f"        [X] Thoát chương trình")
+        print(f"\n           ------------------------")
+        print(f"           - {YELLOW}{bluesea_id}{RESET} -")
+        print(f"           ------------------------")
+        choice = input().strip().upper()
+        if choice == "1":
+            try:
+                facebook_all()
+            except:
+                break
+        elif choice == "2":
+            try:
+                facebook()
+            except:
+                continue
+        elif choice == "3":
+                option_menu()
+                continue
+        elif choice == "4":
+                try:
+                    running = True
+                    listener = keyboard.Listener(on_press=on_press)
+                    listener.start()
+                    comment()
+                except:
+                    continue
+        elif choice == "5":
+                try:
+                    running = True
+                    listener = keyboard.Listener(on_press=on_press)
+                    listener.start()
+                    like()
+                except Exception as e:
+                    print(e)
+                    continue
+        elif choice == "6":
+                try:
+                    running = True 
+                    listener = keyboard.Listener(on_press=on_press)
+                    listener.start()
+                    emotion()
+                except:
+                    continue
+        elif choice == "7":
+            running = True
+            listener = keyboard.Listener(on_press=on_press)
+            listener.start()
+            da_luong()
+        elif choice =="8":
+            smart_care()
+        elif choice == "H":
+            banner()
+        elif choice == "X":
+                print(f"Đã {RED}thoát chương trình{RESET}.")
+                break
+        else:
+                print(f"Lựa chọn {RED}không hợp lệ{RESET}!")
+    
+
+else:
+     gioihan = 100
+     while True:
+        os.system('cls' if os.name == 'nt' else 'clear')
+        print(f"\n=== {BLUE}BLUESEA PROJECT{RESET}_3.Trial ===")
+        print(f"----------copyright: HACKER NGUYEN VAN DUNG")
+        print(f"   {YELLOW}QUẢN TRỊ CẤU HÌNH{RESET}")
+        print(f"[{YELLOW}1{RESET}] MỞ CHỈ ĐỊNH CẤU HÌNH")
+        print(f"[{YELLOW}2{RESET}] CHỈNH SỬA CẤU HÌNH")
+        print(f"   {RED}HOẠT ĐỘNG CẤU HÌNH{RESET}")  
+        print(f"[{GREEN}3{RESET}] COMMENT POST ANTI BLOCK")
+        print(f"[{GREEN}4{RESET}] LIKE POST ANTI BLOCK")
+        print(f"        [X] Thoát chương trình")
+        print(f"\n           ------------------------")
+        print(f"           - {bluesea_id} -")
+        print(f"           ------------------------")
+        choice = input().strip().upper()
+        if choice == "1":
+            try:
+                facebook()
+            except:
+                break
+        elif choice == "2":
+            try:
+                option_menu() 
+            except:
+                continue
+        elif choice == "3":
+                try:
+                    running = True 
+                    listener = keyboard.Listener(on_press=on_press)
+                    listener.start()
+                    comment()
+                except:
+                    continue
+        elif choice == "4":
+                try:
+                    running = True
+                    listener = keyboard.Listener(on_press=on_press)
+                    listener.start()
+                    like()
+                except:
+                    continue
+        elif choice == "X":
+                print(f"Đã {RED}thoát chương trình{RESET}.")
+                break
+        elif choice == "H":
+            banner()
+        else:
+                print(f"Lựa chọn {RED}không hợp lệ{RESET}!")
+    

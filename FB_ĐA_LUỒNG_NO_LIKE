@@ -1,0 +1,370 @@
+CYAN = '\033[96m'
+GREEN = '\033[92m'
+YELLOW = '\033[93m'
+MAGENTA = '\033[95m'
+BLUE = '\033[94m'
+RED = '\033[91m'
+RESET = '\033[0m'
+
+import threading
+import time
+import os
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.common.exceptions import NoSuchElementException
+import undetected_chromedriver as uc
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support import expected_conditions as EC
+from datetime import datetime
+from selenium.webdriver.common.action_chains import ActionChains
+from colorama import Fore, Style
+os.system("")
+frames = ['|', '/', '-', '\\']  
+
+# Hàm delay chung với tham số cho hành động và thời gian
+def delay_action(second, action_text, is_error=False):
+    for i in range(second * 10, 0, -1):
+        icon = frames[i % len(frames)]  # Chọn icon theo bước
+        color = RED if is_error else CYAN if i % 2 == 0 else BLUE
+        bracket_color = YELLOW if i % 2 == 0 else MAGENTA
+        print(f"{color}{icon} {action_text} {bracket_color}[{i//10}.{i%10}s]{RESET}", end="\r")
+        time.sleep(0.1)
+    print(" " * 60, end="\r")   
+def delay(second):
+    delay_action(second, "Đang chạy job")
+def delay_laplai(second):
+    delay_action(second, "Đang lấy job")
+def delay_die(second):
+    delay_action(second, "Job die => Đang bỏ qua", is_error=True)
+def delay_anti(second):
+    delay_action(second, "Đang chạy antiband")
+# Tạo profile
+def tao_profile_moi():
+    index = 1
+    while True:
+        new_profile_path = os.path.join(base_path, f"chrome_profile_{index}")
+        if not os.path.exists(new_profile_path):
+            break
+        index += 1
+
+    print(f"{CYAN}➡️ Đang tạo profile chrome_profile_{index}, vui lòng đăng nhập GoLike{RESET}")
+    driver = create_driver(new_profile_path, headless=False)
+    driver.set_window_size(500, 700)
+    driver.get("https://app.golike.net/login")
+    input("👉 Sau khi đăng nhập xong GoLike, nhấn Enter để tiếp tục...")
+    driver.execute_script("window.open('https://m.facebook.com/login');")
+    input("👉 Sau khi đăng nhập xong Facebook, nhấn Enter để tiếp tục...")
+    driver.quit()
+    print(f"{GREEN}✅ Đã tạo và lưu chrome_profile_{index}{RESET}")
+    return new_profile_path 
+base_path = os.path.dirname(os.path.abspath(__file__))
+profiles = []        
+def load_profiles_from_file():
+    profiles = []
+    if os.path.exists('profiles.txt'):
+        with open('profiles.txt', 'r') as file:     
+            profiles = [line.strip().split("\\")[-1] for line in file.readlines()]
+    return profiles
+profiles = load_profiles_from_file()
+def save_profiles_to_file(profiles):
+    with open('profiles.txt', 'w') as file:
+        for profile in profiles:
+            file.write(f"{profile}\n")
+
+def kiem_tra_profile(profiles):
+    print(f"{CYAN}===== Danh sách các tài khoản ====={RESET}")
+    for idx, profile in enumerate(profiles, start=1):
+        print(f"[{idx}] {profile}")
+    
+    lua_chon = input(f"[W] Nhập số tài khoản muốn kiểm tra (hoặc nhập 'x' để thoát): ").strip()
+    if lua_chon.lower() == 'x':
+        return
+    
+    try:
+        lua_chon = int(lua_chon)
+        if 1 <= lua_chon <= len(profiles):
+            profile_path = profiles[lua_chon - 1]
+            print(f"{CYAN}➡️ Đang kiểm tra tài khoản: {profile_path}{RESET}")
+            
+            driver = kt_driver(profile_path)
+            driver.set_window_size(500,700)
+            # Kiểm tra GoLike
+            driver.get("https://app.golike.net/home")
+            driver.execute_script("document.body.style.zoom = '0.80';")
+            time.sleep(2)
+            input("Bấm Enter để tiếp tục nếu không thay đổi...")
+            if "golike.net" in driver.current_url:
+                print(f"{Fore.GREEN}[✅] Đã đăng nhập GoLike: {profile_path}{Style.RESET_ALL}")
+            else:
+                print(f"{Fore.YELLOW}[...] Chưa đăng nhập GoLike: {profile_path}{Style.RESET_ALL}")
+                input("Vui lòng đăng nhập GoLike rồi bấm Enter...")
+            # Kiểm tra Facebook
+            driver.get("https://www.facebook.com/friends")
+            input("Bấm Enter để tiếp tục nếu không thay đổi...")
+            time.sleep(3)
+            if "facebook.com" in driver.current_url:
+                print(f"{Fore.GREEN}[✅] Đã đăng nhập Facebook: {profile_path}{Style.RESET_ALL}")
+            else:
+                input("Vui lòng đăng nhập Facebook, sau đó bấm Enter...")
+
+            driver.quit()
+            print(f"{CYAN}➡️ Đã hoàn thành kiểm tra tài khoản.{RESET}")
+
+        else:
+            print(f"{RED}⚠️ Số tài khoản không hợp lệ!{RESET}")
+    except ValueError:
+        print(f"{RED}⚠️ Vui lòng nhập số hợp lệ!{RESET}")
+def kt_driver(profile_path):
+    
+    options = uc.ChromeOptions()
+    options.add_argument(f"--user-data-dir={os.path.abspath(profile_path)}")
+    options.add_argument("--disable-blink-features=AutomationControlled")
+    options.add_argument("--force-device-scale-factor=1")
+    options.add_argument("--no-first-run --no-service-autorun --password-store=basic")
+    options.add_argument("--no-sandbox")
+    options.add_argument("--disable-dev-shm-usage")
+    options.add_argument("--disable-blink-features=AutomationControlled")
+    mobile_ua = "Mozilla/5.0 (Linux; Android 9; SM-G960F) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Mobile Safari/537.36"
+    options.add_argument(f"--user-agent={mobile_ua}")
+    driver = uc.Chrome(options=options, use_subprocess=True)
+    return driver
+# Hàm tạo driver với profile
+def create_driver(profile_path, headless=False):
+    
+    options = uc.ChromeOptions()
+    options.add_argument(f"--user-data-dir={os.path.abspath(profile_path)}")
+    options.add_argument("--disable-blink-features=AutomationControlled")
+    options.add_argument("--force-device-scale-factor=0.4")
+    options.add_argument("--no-first-run --no-service-autorun --password-store=basic")
+    options.add_argument("--no-sandbox")
+    options.add_argument("--disable-dev-shm-usage")
+    options.add_argument("--disable-blink-features=AutomationControlled")
+    #mobile_ua = "Mozilla/5.0 (Linux; Android 9; SM-G960F) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Mobile Safari/537.36"
+    #options.add_argument(f"--user-agent={mobile_ua}")
+    if headless:
+        options.headless = True
+        options.add_argument("--window-size=1920,1080")
+        options.add_argument('--log-level=3')  # Chỉ hiện lỗi nghiêm trọng
+        options.add_argument('--disable-gpu')
+        options.add_argument('--disable-software-rasterizer')
+
+    driver = uc.Chrome(options=options, use_subprocess=True)
+    return driver
+tongxu= 0
+biendem = 0
+dem_loi = 0
+#da_dong = False 
+def lam_job_facebook_like(driver, index=0):
+    global biendem, tongxu, dem_loi
+    try:
+        driver.get("https://app.golike.net/jobs/facebook?load_job=false")
+        driver.execute_script("document.body.style.zoom = '0.50';")
+        delay_laplai(2)
+        # Kiểm tra xu
+        kt = driver.find_element(By.XPATH, '/html/body/div[1]/div/div[1]/div[2]/div/div[1]/div[2]/span/div[1]/div/div/div/div/div[1]/h6/span/span')
+        text = kt.text.strip()
+        xu = int(text) if text.isdigit() else 35
+        delay(5)
+        kt.click()
+        delay(2)
+        # chuyển snag 
+        laylink = driver.find_element(By.XPATH, '/html/body/div[1]/div/div[1]/div[2]/div[2]/div[1]/div/div/a[1]/div[3]/i')
+        delay(2)
+        laylink.click()
+        WebDriverWait(driver, 60).until(EC.number_of_windows_to_be(2))
+        handles = driver.window_handles
+        if len(handles) > 1:  
+            driver.switch_to.window(handles[1])
+        delay(20)
+        # main
+        
+        driver.execute_script("window.scrollBy(0, 500);")
+        driver.execute_script("window.scrollBy(0, -500);")
+        driver.execute_script("window.scrollBy(0, 500);")
+        driver.execute_script("window.scrollBy(0, -500);")
+        driver.execute_script("window.scrollBy(0, 500);")  
+        driver.execute_script("window.scrollBy(0, -500);")
+        
+        found = False
+        try:
+
+
+            try:
+                # like
+                modal = driver.find_element(By.XPATH, '//div[@role="dialog"]//div[@aria-label="Đóng"]').find_element(By.XPATH, "./ancestor::div[@role='dialog']")
+                like = WebDriverWait(modal, 5).until(EC.presence_of_element_located((By.XPATH, './/div[@aria-label="Thích"]')))
+            except:
+                like = driver.find_element(By.XPATH, '//div[@aria-label="Thích"]')
+            try:
+                found = True
+                delay(3)
+                ActionChains(driver).move_to_element(like).perform()
+                delay(3)
+                ActionChains(driver).move_to_element(like).click().perform()
+                delay(3)
+            except:
+                time.sleep(0.1)
+
+
+            if found:
+                handles = driver.window_handles
+                driver.switch_to.window(handles[0])
+                delay(1)
+                # hoàn thành job golike
+
+                driver.find_element(By.XPATH, '/html/body/div[1]/div/div[1]/div[2]/div[2]/div[2]/div').click()
+                delay(2)
+                WebDriverWait(driver, 30).until(
+                    EC.element_to_be_clickable((By.CSS_SELECTOR, 'button.swal2-confirm.swal2-styled'))
+                ).click()
+                delay_anti(1)
+                # Quay lại tab Fb và **KHÔNG** hủy like
+                handles = driver.window_handles
+                driver.switch_to.window(handles[1])
+                # text_to_find = 'Giờ bạn chưa dùng được tính năng này'
+                # try:
+                #     WebDriverWait(driver, 1).until(EC.presence_of_element_located((By.XPATH, f"//*[contains(text(), '{text_to_find}')]")))
+                #     return False
+                #
+                # except Exception as e:
+                #     time.sleep(0.5)
+                #     try:
+                #         ActionChains(driver).move_to_element(like).click().perform()
+                #
+                #     except:
+                #         try:
+                #             modal = driver.find_element(By.XPATH, '//div[@role="dialog"]//div[@aria-label="Đóng"]').find_element(By.XPATH, "./ancestor::div[@role='dialog']")
+                #             like = WebDriverWait(modal, 5).until(EC.presence_of_element_located((By.XPATH, './/div[@aria-label="Thích"]')))
+                #         except:
+                #             like = driver.find_element(By.XPATH, '//div[@aria-label="Thích"]')
+                #             ActionChains(driver).move_to_element(like).click().perform()
+                        
+        # Xu li lai job loi + in ra
+                delay_anti(1)
+                driver.close()
+                handles = driver.window_handles
+                driver.switch_to.window(handles[0])
+                biendem += 1
+                tongxu += xu
+                print(f" [Luồng {index}] {CYAN}| {biendem} |  FACEBOOK  | {RED} Ẩn ID {RESET} |{GREEN} Hoàn Thành {RESET}| {YELLOW}+{xu}{RESET} | {MAGENTA}Tổng xu: {tongxu}{RESET} | {BLUE}Time: {datetime.now().strftime('%H:%M:%S')}{RESET} | ")
+                
+                #print(f"{CYAN}{NGHIENG}[ FACEBOOK ] {RESET} | {RED} Ẩn ID {RESET} |{GREEN} Hoàn Thành {RESET}| {BLUE}Time: {datetime.now().strftime('%H:%M:%S')}{RESET} | ")
+            else:
+                print("[Luồng {index}] JOB LOI")
+                delay_die(1)
+                handles = driver.window_handles
+                driver.switch_to.window(handles[1])
+                driver.close()
+                driver.switch_to.window(handles[0])
+                #print(""*20, end="\r")
+        except:
+            delay_die(1)
+            WebDriverWait(driver, 10).until(EC.number_of_windows_to_be(2))
+
+            all_windows = driver.window_handles
+            driver.switch_to.window(all_windows[1])
+            driver.close()
+            driver.switch_to.window(all_windows[0])
+            delay_die(1)
+                            
+            element = driver.find_element(By.XPATH, '/html/body/div[1]/div/div[1]/div[2]/div[3]/div[1]')
+            delay_die(1)
+            driver.execute_script("arguments[0].scrollIntoView(true);", element)
+            delay_die(1)
+            element.click()
+            driver.find_element(By.XPATH, '/html/body/div[1]/div/div[1]/div[2]/div[3]/div[2]/div/button').click()
+            WebDriverWait(driver, 30).until(
+                EC.element_to_be_clickable((By.CSS_SELECTOR, 'button.swal2-confirm.swal2-styled'))
+            ).click()
+            print(f"{RED}[Luồng {index}] Bỏ qua job thành công{RESET}", end="\r")
+            #print(""*20, end="\r")
+    except:
+        # Thêm xem lỗi và tự đóng luồng
+        dem_loi += 1
+        delay_die(1)
+        print(f"{RED}[Luồng {index}] Lỗi luồng {RESET}", end="\r")
+        #print(f"{RED}[Luồng {index}] Lỗi luồng ({dem_loi}/20) => Đạt 20 lỗi sẽ tự động dừng  {RESET}", end="\r")
+        #if dem_loi >= 20 :
+        #    print(f"\n{RED}[Luồng {index}] Quá 20 lỗi => Đã đóng{RESET}")
+        #    driver.quit()
+        #    return
+        #else:
+        #    delay_laplai(1)
+            
+        #print(""*20, end="\r")
+        
+# Hàm làm nhiệm vụ Facebook Like cho mỗi profile
+def lam_job(profile_path, index=0):
+    driver = create_driver(profile_path, headless=False)
+    driver.set_window_size(500, 700)
+    driver.set_window_position(x=550 * index, y=0 )
+    os.system('cls' if os.name == 'nt' else 'clear')
+    while True:
+        delay_laplai(1)
+        lam_job_facebook_like(driver, index)
+# Hàm chạy đa luồng với delay giữa các luồng
+def chay_da_luong(profile_paths, delay=10):
+    threads = []
+    for index, profile_path in enumerate(profile_paths):
+        time.sleep(delay * index)
+        t = threading.Thread(target=lam_job, args=(profile_path, index))
+        t.daemon = True 
+        print(f"Đang mở: {profile_path} [Luồng {index}] ")
+        t.start()
+        threads.append(t)
+    for t in threads:
+        t.join()
+def tat_chrome_hieu_ung():
+    os.system("")
+    frames = ['|', '/', '-', '\\']  
+    try:
+        print("\033[1;33mĐang tắt trình duyệt Chrome", end="", flush=True)  
+        for i in range(20): 
+            print(f"\r\033[1;33mĐang tắt trình duyệt Chrome {frames[i % len(frames)]}", end="", flush=True)
+            time.sleep(0.2)
+        os.system('taskkill /f /im chrome.exe >nul 2>&1')
+        time.sleep(0.5)
+        print("\n\0033[1;32mĐã tắt Chrome thành công.") 
+    except Exception as e:
+        print("\n\033[1;31m❌ Lỗi khi tắt Chrome:", e)  
+ #Menu UI
+def ui():
+    while True:
+        tat_chrome_hieu_ung()
+        delay_anti(15)
+        os.system('cls')
+        
+        print(f"""
+{CYAN}===== MENU ====={RESET}
+[1]  Thêm tài khoản
+[2]  Kiểm tra đăng nhập
+[3]  Làm nhiệm vụ (đồng thời)
+[X]  Thoát
+        """)
+        lua_chon = input("[W] Nhập lựa chọn: ").strip()
+        profiles = load_profiles_from_file()  # Đọc lại danh sách profile từ file
+
+        if lua_chon == "1":
+            profile_path = tao_profile_moi()
+            if profile_path not in profiles:
+                profiles.append(profile_path)
+                save_profiles_to_file(profiles)  # Lưu lại danh sách profile vào file
+        elif lua_chon == "2":
+            kiem_tra_profile(profiles)
+
+        elif lua_chon == "3":
+            try:
+                chay_da_luong(profiles)
+            except Exception as e:
+                print(e)
+                break
+        elif lua_chon.lower() == "x":
+            break
+# Thực thi chương trình với 3 profile
+if __name__ == "__main__":
+    ui()
+
+
+
+
+
+
