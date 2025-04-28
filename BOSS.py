@@ -2,6 +2,8 @@ import os
 import sys
 import subprocess
 import dns
+import socket
+
 # Danh sách thư viện cần kiểm tra
 libraries = [
     "requests",
