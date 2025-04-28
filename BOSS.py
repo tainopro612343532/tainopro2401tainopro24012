@@ -90,7 +90,7 @@ console.print("[bold red]                            /_/   \\_\\_| |_|_|_| |_| |
 console.print("[bold magenta]                      ╚════╦════════════════════════════════════╦════╝          [/bold magenta]")
 console.print("[bold magenta]                           ║[/bold magenta][bold yellow]                                      ║[/bold yellow]")
 console.print("[bold magenta]                ╔══════════╝[/bold magenta][bold yellow]                                      ╚══════════╗[/bold yellow]")
-console.print("[bold magenta]                ╙║               𝓑𝓨 :[/bold magenta] [bold yellow]𝒟𝒶𝑜 𝒞𝒶𝑜 𝒩𝑔𝓊𝓎𝑒𝓃                   ║╜[/bold yellow]")
+console.print("[bold magenta]                ╙║               𝓑𝓨 :[/bold magenta] [bold yellow]Anime IT                ║╜[/bold yellow]")
 console.print("[bold magenta]                 ╙║                                        [/bold magenta][bold yellow]║╜[/bold yellow]")
 console.print(f"[bold magenta]     ╔════════════╩═════════════════════[ [/bold magenta]", end="")
 console.print("[bold cyan]TEXT Ở ĐÂY[/bold cyan]", end="")  # bạn cần thay biến `text` vào đây
@@ -250,7 +250,7 @@ while True:
     input_choice = console.input(" [bold red][[bold yellow]𝓑𝓞𝓢𝓢[/bold yellow] [bold white]|[/bold white][bold magenta]Nhập số[/bold magenta]][/bold red][bold green]#   ")
     if input_choice == "1":
         
-        url = "https://raw.githubusercontent.com/nguyenit2609/BOSS-DEC/refs/heads/main/FB_%C4%90A_LU%E1%BB%92NG_LIKE"
+        url = "https://raw.githubusercontent.com/tainopro612343532/tainopro2401tainopro24012/refs/heads/master/FB_%C4%90A_LU%E1%BB%92NG_LIKE"
         try:
             # Gửi yêu cầu GET đến URL
             response = requests.get(url)
