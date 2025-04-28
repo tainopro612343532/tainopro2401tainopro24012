@@ -89,7 +89,7 @@ def generate_key(is_admin=False):
 
 def save_key_to_file(key):
     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    with open("key.txt", "w") as f:
+    with open("key.txt", "a") as f:  # Sử dụng "a" để thêm vào cuối file
         f.write(f"{key} | {timestamp}\n")
 
 def clean_expired_key():
@@ -111,7 +111,8 @@ def clean_expired_key():
                     updated_lines.append(line)
                 elif key.startswith("DCN-ADMIN"):
                     updated_lines.append(line)
-            except:
+            except Exception as e:
+                print(f"Lỗi khi xử lý dòng key: {e}")
                 continue
     
     with open("key.txt", "w") as f:
@@ -133,20 +134,25 @@ def check_stored_key():
     
     current_time = datetime.now()
     current_date = current_time.date()
-    with open("key.txt", "r") as f:
-        for line in f:
-            try:
-                stored_key, timestamp = line.split(" | ")
-                stored_key = stored_key.strip()
-                key_time = datetime.strptime(timestamp.strip(), "%Y-%m-%d %H:%M:%S")
-                key_date = key_time.date()
-                if stored_key == "DCN-ADMIN":
-                    return stored_key, stored_key
-                elif stored_key.startswith("DCN-"):
-                    if key_date == current_date:
+    try:
+        with open("key.txt", "r") as f:
+            for line in f:
+                try:
+                    stored_key, timestamp = line.split(" | ")
+                    stored_key = stored_key.strip()
+                    key_time = datetime.strptime(timestamp.strip(), "%Y-%m-%d %H:%M:%S")
+                    key_date = key_time.date()
+                    if stored_key == "DCN-ADMIN":
                         return stored_key, stored_key
-            except:
-                continue
+                    elif stored_key.startswith("DCN-"):
+                        if key_date == current_date:
+                            return stored_key, stored_key
+                except Exception as inner_e:
+                    print(f"Lỗi khi xử lý key: {inner_e}")
+                    continue
+    except Exception as e:
+        print(f"Lỗi khi đọc file key: {e}")
+
     return None, None
 
 # Hàm rút gọn link
