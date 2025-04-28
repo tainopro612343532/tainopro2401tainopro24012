@@ -89,51 +89,55 @@ def generate_key(is_admin=False):
 
 def save_key_to_file(key):
     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    with open("key.txt", "a") as f:  # Sử dụng "a" để thêm vào cuối file
+    with open("key.txt", "w") as f:
         f.write(f"{key} | {timestamp}\n")
 
+# Hàm xóa key hết hạn
 def clean_expired_key():
     if not os.path.exists("key.txt"):
+        print("[bold red]Lỗi: File key.txt không tồn tại![/bold red]")
         return
-    
+
     updated_lines = []
     current_time = datetime.now()
     current_date = current_time.date()
-    
-    with open("key.txt", "r") as f:
-        lines = f.readlines()
-        for line in lines:
-            try:
-                key, timestamp = line.strip().split(" | ")
-                key_time = datetime.strptime(timestamp, "%Y-%m-%d %H:%M:%S")
-                key_date = key_time.date()
-                if not key.startswith("DCN-ADMIN") and key_date == current_date:
-                    updated_lines.append(line)
-                elif key.startswith("DCN-ADMIN"):
-                    updated_lines.append(line)
-            except Exception as e:
-                print(f"Lỗi khi xử lý dòng key: {e}")
-                continue
-    
-    with open("key.txt", "w") as f:
-        f.writelines(updated_lines)
 
-def is_valid_key(key, expected_key):
-    clean_expired_key()
-    if key == "DCN-ADMIN":
-        return True
-    elif key == expected_key:
-        return True
-    return False
+    try:
+        with open("key.txt", "r") as f:
+            lines = f.readlines()
+            for line in lines:
+                try:
+                    key, timestamp = line.strip().split(" | ")
+                    key_time = datetime.strptime(timestamp, "%Y-%m-%d %H:%M:%S")
+                    key_date = key_time.date()
+                    if not key.startswith("DCN-ADMIN") and key_date == current_date:
+                        updated_lines.append(line)
+                    elif key.startswith("DCN-ADMIN"):
+                        updated_lines.append(line)
+                except Exception as e:
+                    print(f"Lỗi khi xử lý dòng key '{line.strip()}': {e}")
+                    continue
+        
+        # Ghi lại các dòng hợp lệ vào file key.txt
+        if updated_lines:
+            with open("key.txt", "w") as f:
+                f.writelines(updated_lines)
+        else:
+            print("[bold red]Không có key hợp lệ nào được tìm thấy trong file![/bold red]")
+    except Exception as e:
+        print(f"Lỗi khi đọc hoặc ghi file key.txt: {e}")
 
+# Kiểm tra key đã lưu
 def check_stored_key():
     clean_expired_key()
-    
+
     if not os.path.exists("key.txt"):
+        print("[bold red]Không tìm thấy file key.txt, không có key được lưu trữ![/bold red]")
         return None, None
-    
+
     current_time = datetime.now()
     current_date = current_time.date()
+    
     try:
         with open("key.txt", "r") as f:
             for line in f:
@@ -152,7 +156,7 @@ def check_stored_key():
                     continue
     except Exception as e:
         print(f"Lỗi khi đọc file key: {e}")
-
+    
     return None, None
 
 # Hàm rút gọn link
