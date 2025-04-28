@@ -338,7 +338,7 @@ def lam_job_facebook_like(driver, index=0):
                 delay_anti(1)
                 biendem += 1
                 tongxu += xu
-                print(f" [Luồng {index}] {CYAN}| {biendem} |  FACEBOOK  | {RED} Ẩn ID {RESET} |{GREEN} Hoàn Thành {RESET}| {YELLOW}+{xu}{RESET} | {MAGENTA}Tổng xu: {tongxu}{RESET} | {BLUE}Time: {datetime.now().strftime('%H:%M:%S')}{RESET} | ")
+                print(f" [Luồng {index}] {CYAN}| {biendem} | ANIME IT | FACEBOOK  | {RED} Ẩn ID {RESET} |{GREEN} Hoàn Thành {RESET}| {YELLOW}+{xu}{RESET} | {MAGENTA}Tổng xu: {tongxu}{RESET} | {BLUE}Time: {datetime.now().strftime('%H:%M:%S')}{RESET} | ")
                 
                 #print(f"{CYAN}{NGHIENG}[ FACEBOOK ] {RESET} | {RED} Ẩn ID {RESET} |{GREEN} Hoàn Thành {RESET}| {BLUE}Time: {datetime.now().strftime('%H:%M:%S')}{RESET} | ")
         except:
